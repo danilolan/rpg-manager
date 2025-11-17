@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CharacterCategory {
+  PLAYER
+  ZOMBIE
+  NPC
+  MONSTER
+  ALLY
+}
+
+model Character {
+  id         String            @id @default(cuid())
+  name       String
+  category   CharacterCategory
+  age        Int?
+  weight     Float?            // in kg
+  height     Float?            // in cm
+  
+  // One-to-one relations
+  attributes Attributes?
+  status     Status?
+  
+  // One-to-many relations
+  skills     Skill[]
+  qualities  Quality[]
+  drawbacks  Drawback[]
+  
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  @@map("characters")
+}
+
+model Attributes {
+  id           String    @id @default(cuid())
+  strength     Int       @default(0)
+  intelligence Int       @default(0)
+  dexterity    Int       @default(0)
+  perception   Int       @default(0)
+  constitution Int       @default(0)
+  willPower    Int       @default(0)
+  
+  characterId  String    @unique
+  character    Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  
+  @@map("attributes")
+}
+
+model Status {
+  id         String    @id @default(cuid())
+  life       Int       @default(0)
+  endurance  Int       @default(0)
+  speed      Int       @default(0)
+  maxLoad    Float     @default(0)
+  
+  characterId String   @unique
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("status")
+}
+
+model Skill {
+  id          String    @id @default(cuid())
+  name        String
+  level       Int       @default(0)
+  description String?
+  
+  characterId String
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@map("skills")
+}
+
+model Quality {
+  id          String    @id @default(cuid())
+  name        String
+  level       Int       @default(0)
+  description String?
+  
+  characterId String
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@map("qualities")
+}
+
+model Drawback {
+  id          String    @id @default(cuid())
+  name        String
+  level       Int       @default(0)
+  description String?
+  
+  characterId String
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@map("drawbacks")
+}
+
