@@ -127,7 +127,7 @@ export function CharacterFormDrawer({ onCharacterCreated }: CharacterFormDrawerP
   }
 
   return (
-    <Drawer direction="left" open={open} onOpenChange={setOpen}>
+    <Drawer direction="right" open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
         <Button>
           <Plus />
