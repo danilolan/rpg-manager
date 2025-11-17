@@ -75,41 +75,121 @@ npm run docker:down
 npm run docker:reset
 ```
 
-## Local Development (Without Docker)
+## 🔥 Recommended: Local Development with Hot Reload
 
-If you prefer to run the app locally without Docker:
+**Best for development!** Run only the database in Docker and Next.js locally for fast hot reload.
 
-### 1. Start PostgreSQL with Docker
+### Why This Approach?
+
+- ✅ **Fast hot reload** - Changes reflect instantly
+- ✅ **Better performance** - No Docker overhead for Next.js
+- ✅ **Easy debugging** - Direct access to Node.js process
+- ✅ **Same deployment** - Docker setup unchanged for production
+
+### Setup
+
+#### 1. Stop Full Docker Stack (if running)
 
 ```bash
-# Start only the database
-docker-compose up postgres -d
+npm run docker:down
 ```
 
-### 2. Setup Prisma
+#### 2. Create `.env` File
+
+Create a `.env` file in the project root:
+
+```env
+# Database Configuration
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=rpg_manager
+POSTGRES_PORT=5432
+
+# Application Configuration
+APP_PORT=3000
+NODE_ENV=development
+
+# Prisma Database URL (connects to Docker PostgreSQL)
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/rpg_manager?schema=public"
+```
+
+#### 3. Start Only the Database
 
 ```bash
-# Install dependencies
-npm install
+npm run db:start
+```
 
-# Generate Prisma Client
+This starts PostgreSQL in Docker and runs in the background (`-d` flag).
+
+#### 4. Setup Prisma (First Time Only)
+
+```bash
+# Generate Prisma Client types
 npm run prisma:generate
 
 # Push schema to database
 npm run prisma:push
 ```
 
-### 3. Run the Application
+#### 5. Run Next.js Locally
 
 ```bash
-# Start Next.js dev server
 npm run dev
 ```
 
+🎉 **Done!** App runs at http://localhost:3000 with full hot reload.
+
+### Daily Workflow
+
+```bash
+# Start database (if not running)
+npm run db:start
+
+# Start Next.js
+npm run dev
+
+# That's it! Make changes and see them instantly.
+```
+
+### Database Management Commands
+
+```bash
+# Start database
+npm run db:start
+
+# Stop database (keeps data)
+npm run db:stop
+
+# Reset database (deletes all data and restarts)
+npm run db:reset
+
+# View database in Prisma Studio
+npm run prisma:studio
+```
+
+## Alternative: Full Docker Stack (No Hot Reload)
+
+If you prefer to run everything in Docker (note: hot reload is slower):
+
+```bash
+# Start all services
+npm run docker:dev:build
+
+# Stop all services
+npm run docker:down
+```
+
+See the "Quick Start (Docker)" section at the top for full details.
+
 ## Available Scripts
 
-### Docker Scripts
-- `npm run docker:dev` - Start all services
+### Database-Only Scripts (Recommended for Local Dev)
+- `npm run db:start` - Start PostgreSQL in Docker (background)
+- `npm run db:stop` - Stop PostgreSQL
+- `npm run db:reset` - Reset database (delete all data and restart)
+
+### Full Docker Scripts
+- `npm run docker:dev` - Start all services (app + database)
 - `npm run docker:dev:build` - Build and start all services
 - `npm run docker:down` - Stop all services
 - `npm run docker:reset` - Stop services, remove volumes, rebuild and start
@@ -158,10 +238,13 @@ npx prisma migrate deploy
 ### Reset Database
 
 ```bash
-# With Docker (removes all data)
+# Database only (recommended for local dev)
+npm run db:reset
+
+# Full Docker stack (removes all data)
 npm run docker:reset
 
-# Locally
+# Or manually with Prisma
 npx prisma migrate reset
 ```
 
@@ -219,6 +302,23 @@ docker run -p 3000:3000 \
 
 ## Troubleshooting
 
+### Hot Reload Not Working in Docker
+
+**Solution:** Use the recommended local development workflow (database-only in Docker):
+
+```bash
+# Stop full Docker stack
+npm run docker:down
+
+# Start only database
+npm run db:start
+
+# Run Next.js locally
+npm run dev
+```
+
+This gives you instant hot reload while keeping the database isolated.
+
 ### Port Already in Use
 
 ```bash
@@ -232,6 +332,20 @@ netstat -ano | findstr :5432
 
 ### Database Connection Issues
 
+**For Local Dev (db:start):**
+```bash
+# Check if postgres is running
+docker ps
+
+# View logs
+docker logs rpg-manager-db
+
+# Restart database
+npm run db:stop
+npm run db:start
+```
+
+**For Full Docker Stack:**
 ```bash
 # Check if postgres is healthy
 docker-compose ps
@@ -246,8 +360,15 @@ npm run docker:reset
 
 ### Prisma Client Not Generated
 
+**For Local Dev:**
 ```bash
 # Regenerate Prisma Client
+npm run prisma:generate
+```
+
+**For Docker:**
+```bash
+# Regenerate in container
 docker exec -it rpg-manager-app npm run prisma:generate
 
 # Or rebuild everything
@@ -256,8 +377,13 @@ npm run docker:reset
 
 ### Changes Not Reflecting
 
+**For Local Dev (Recommended):**
+- Next.js hot reload should work automatically
+- If not, restart: `Ctrl+C` and `npm run dev`
+
+**For Docker:**
 ```bash
-# Rebuild containers (Next.js should hot reload, but if not)
+# Rebuild containers (hot reload is slower in Docker)
 npm run docker:dev:build
 ```
 
