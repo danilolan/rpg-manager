@@ -1,18 +1,19 @@
 import { Label } from "@/components/ui/label"
 
-export default function Home() {
+export default function CharactersPage() {
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Home</h2>
+        <h2 className="text-2xl font-bold tracking-tight">Characters</h2>
         <p className="text-muted-foreground">
-          Welcome to RPG Manager
+          Manage your RPG characters
         </p>
       </div>
       
       <div className="rounded-lg border bg-card p-6">
-        <Label>This is an example label on the homepage</Label>
+        <Label>Characters page - Coming soon</Label>
       </div>
     </div>
   )
 }
+
