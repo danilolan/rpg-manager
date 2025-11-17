@@ -2,147 +2,120 @@
 
 A modern RPG character management system built with Next.js, Prisma, and PostgreSQL.
 
-## Features
+## Getting Started
 
-- ✅ Create and manage RPG characters
-- ✅ Character attributes system (Strength, Intelligence, Dexterity, etc.)
-- ✅ Status tracking (Life, Endurance, Speed, Max Load)
-- ✅ Skills, Qualities, and Drawbacks system
-- ✅ Multiple character categories (Player, NPC, Zombie, Monster, Ally)
-- ✅ RESTful API
-- ✅ Docker support for easy deployment
-- ✅ Database seeding with sample data
-
-## Tech Stack
-
-- **Frontend:** Next.js 16, React 19, TailwindCSS
-- **Backend:** Next.js API Routes (Server-Side)
-- **Database:** PostgreSQL 16
-- **ORM:** Prisma
-- **UI Components:** Radix UI, shadcn/ui
-- **Container:** Docker & Docker Compose
-
-## Quick Start
-
-### 1. Prerequisites
+### Prerequisites
 
 - Node.js 20+
 - Docker Desktop
 - Git
 
-### 2. Clone and Install
+### Setup (First Time)
 
 ```bash
+# 1. Clone and install
 git clone <your-repo-url>
 cd rpg-manager
 npm install
 ```
 
-### 3. Setup Database
-
-```bash
-# Start PostgreSQL in Docker
-npm run db:start
-
-# Setup database schema and seed with sample data
-npm run db:seed
+**2. Create `.env` file in project root:**
+```env
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=rpg_manager
+POSTGRES_PORT=5432
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/rpg_manager?schema=public"
 ```
 
-### 4. Run Development Server
-
 ```bash
+# 3. Start database (Docker)
+npm run db:start
+
+# 4. Setup database schema + seed data
+npm run db:seed
+
+# 5. Start dev server
 npm run dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000)
+**Done!** Visit [http://localhost:3000](http://localhost:3000)
 
-## Available Scripts
+The database runs in Docker (isolated), the app runs locally (fast hot reload).
 
-### Development
+### Daily Development
+
 ```bash
-npm run dev              # Start Next.js dev server with hot reload
-npm run build            # Build for production
-npm run start            # Start production server
-npm run lint             # Run ESLint
+npm run db:start  # Start database (if not running)
+npm run dev       # Start Next.js
 ```
 
-### Database
+## Key Commands
+
 ```bash
-npm run db:start         # Start PostgreSQL in Docker (background)
+# Development
+npm run dev              # Start Next.js with hot reload
+npm run prisma:studio    # Open database GUI (localhost:5555)
+
+# Database
+npm run db:start         # Start PostgreSQL
 npm run db:stop          # Stop PostgreSQL
-npm run db:reset         # Reset database (delete all data)
-npm run db:seed          # Push schema + seed with 5 sample characters
-npm run db:setup         # Complete setup (start + push + seed)
+npm run db:seed          # Reset schema + add 5 sample characters
+npm run prisma:seed      # Add sample characters (no reset)
+
+# Prisma
+npm run prisma:generate  # Regenerate types after schema changes
+npm run prisma:push      # Push schema changes to DB
 ```
 
-### Prisma
-```bash
-npm run prisma:generate  # Generate Prisma Client types
-npm run prisma:push      # Push schema to database
-npm run prisma:migrate   # Create and run migrations
-npm run prisma:studio    # Open Prisma Studio (DB GUI at localhost:5555)
-npm run prisma:seed      # Seed database with sample characters
-```
+## Tech Stack
 
-### Docker (Full Stack)
-```bash
-npm run docker:dev       # Start app + database in Docker
-npm run docker:dev:build # Build and start in Docker
-npm run docker:down      # Stop all services
-npm run docker:reset     # Reset everything (remove volumes + rebuild)
-```
+- **Frontend:** Next.js 16, React 19, TailwindCSS
+- **Backend:** Next.js API Routes
+- **Database:** PostgreSQL 16
+- **ORM:** Prisma
+- **UI:** Radix UI, shadcn/ui
 
-## Database Schema
+## Features
 
-### Character
-- Basic info: name, category, age, weight, height
-- One-to-one: Attributes, Status
-- One-to-many: Skills, Qualities, Drawbacks
-
-### Attributes
-- Strength, Intelligence, Dexterity
-- Perception, Constitution, Will Power
-
-### Status
-- Life, Endurance, Speed, Max Load
-
-### Skills / Qualities / Drawbacks
-- Name, Level, Description
+- Create and manage RPG characters
+- Attributes: Strength, Intelligence, Dexterity, Perception, Constitution, Will Power
+- Status: Life, Endurance, Speed, Max Load
+- Skills, Qualities, and Drawbacks system
+- Character categories: Player, NPC, Zombie, Monster, Ally
+- RESTful API
 
 ## API Endpoints
 
-### Characters
-
 ```
-GET    /api/characters        # List all characters
-POST   /api/characters        # Create a character
-GET    /api/characters/:id    # Get single character
-PATCH  /api/characters/:id    # Update character
-DELETE /api/characters/:id    # Delete character
+GET    /api/characters        # List all
+POST   /api/characters        # Create
+GET    /api/characters/:id    # Get one
+PATCH  /api/characters/:id    # Update
+DELETE /api/characters/:id    # Delete
 ```
 
-**Example: Create Character**
+**Example:**
 ```bash
 curl -X POST http://localhost:3000/api/characters \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Hero Name",
+    "name": "Hero",
     "category": "PLAYER",
-    "attributes": {
-      "strength": 10,
-      "intelligence": 12,
-      "dexterity": 8,
-      "perception": 10,
-      "constitution": 11,
-      "willPower": 9
-    },
-    "status": {
-      "life": 100,
-      "endurance": 80,
-      "speed": 15,
-      "maxLoad": 50
-    }
+    "attributes": {"strength": 10, "intelligence": 12, "dexterity": 8, "perception": 10, "constitution": 11, "willPower": 9},
+    "status": {"life": 100, "endurance": 80, "speed": 15, "maxLoad": 50}
   }'
+```
+
+## Database Schema
+
+```
+Character (name, category, age, weight, height)
+  ├── Attributes (1:1) → strength, intelligence, dexterity, perception, constitution, willPower
+  ├── Status (1:1) → life, endurance, speed, maxLoad
+  ├── Skills (1:N) → name, level, description
+  ├── Qualities (1:N) → name, level, description
+  └── Drawbacks (1:N) → name, level, description
 ```
 
 ## Project Structure
@@ -150,133 +123,63 @@ curl -X POST http://localhost:3000/api/characters \
 ```
 rpg-manager/
 ├── prisma/
-│   ├── schema.prisma       # Database schema
-│   └── seed.ts            # Database seed script
+│   ├── schema.prisma    # Database schema
+│   └── seed.ts         # Seed script (5 sample characters)
 ├── src/
 │   ├── app/
-│   │   ├── api/           # API routes
-│   │   ├── characters/    # Characters page
-│   │   └── layout.tsx     # Root layout
+│   │   ├── api/        # API routes
+│   │   └── characters/ # Characters page
 │   ├── components/
-│   │   ├── organisms/     # Complex components
-│   │   └── ui/           # shadcn/ui components
+│   │   ├── organisms/  # Complex components
+│   │   └── ui/         # shadcn/ui components
 │   └── lib/
-│       └── prisma.ts      # Prisma client singleton
-├── docker-compose.yml      # Docker services config
-├── Dockerfile             # Multi-stage build
-└── package.json           # Dependencies & scripts
+│       └── prisma.ts   # Prisma client singleton
+├── docker-compose.yml   # PostgreSQL service
+└── Dockerfile          # Production build
 ```
 
-## Development Workflow
+## Troubleshooting
 
-### Recommended: Local Dev with Hot Reload
-
-1. Start database in Docker:
+**Port 3000 in use:**
 ```bash
-npm run db:start
+netstat -ano | findstr :3000  # Find process
+# Kill it or change APP_PORT in .env
 ```
 
-2. Run Next.js locally:
+**Database connection failed:**
 ```bash
-npm run dev
+docker ps                      # Check if DB is running
+docker logs rpg-manager-db     # View logs
+npm run db:stop && npm run db:start  # Restart
 ```
 
-This gives you:
-- ✅ Instant hot reload
-- ✅ Fast development cycle
-- ✅ Isolated database
-- ✅ Easy debugging
-
-### Alternative: Full Docker Stack
-
+**Prisma client errors:**
 ```bash
-npm run docker:dev:build
+npm run prisma:generate  # Regenerate client
 ```
 
-Note: Hot reload is slower in Docker.
+## Production Deployment
 
-## Database Seeding
-
-The seed script creates 5 sample characters:
-
-1. **Aria Shadowblade** (PLAYER) - Agile rogue
-2. **Marcus Ironheart** (PLAYER) - Strong warrior
-3. **Elena Moonwhisper** (NPC) - Mysterious mage
-4. **Viktor Stormborn** (ALLY) - Powerful ally
-5. **Selena Nightshade** (MONSTER) - Dangerous foe
-
-Each character includes random stats, 2 skills, 1 quality, and 1 drawback.
-
-Run the seed:
+### Docker
 ```bash
-npm run prisma:seed
-```
-
-## Deployment
-
-### Docker Production Build
-
-```bash
+# Build
 docker build --target production -t rpg-manager:latest .
+
+# Run
 docker run -p 3000:3000 \
-  -e DATABASE_URL="postgresql://..." \
+  -e DATABASE_URL="postgresql://user:pass@host:5432/db" \
   -e NODE_ENV=production \
   rpg-manager:latest
 ```
 
-### CI/CD Ready
-
-The Docker setup is ready for:
-- GitHub Actions
-- GitLab CI
-- Jenkins
-- Any container orchestration platform
-
-## Troubleshooting
-
-### Port Already in Use
+### Full Stack in Docker (Local Testing)
 ```bash
-# Check what's using port 3000
-netstat -ano | findstr :3000
-
-# Change port in .env or stop the process
+npm run docker:dev:build  # Start app + DB in Docker
+npm run docker:down       # Stop
 ```
 
-### Database Connection Issues
-```bash
-# Check if DB is running
-docker ps
-
-# View logs
-docker logs rpg-manager-db
-
-# Restart database
-npm run db:stop
-npm run db:start
-```
-
-### Prisma Client Not Generated
-```bash
-npm run prisma:generate
-```
-
-## Documentation
-
-- [Docker Setup Guide](./DOCKER_SETUP.md) - Comprehensive Docker documentation
-- [Prisma Schema](./prisma/schema.prisma) - Database schema definition
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run `npm run lint`
-5. Submit a pull request
+Note: Use local dev for development (faster hot reload).
 
 ## License
 
 MIT
-
-## Support
-
-For issues and questions, please open an issue on GitHub.
