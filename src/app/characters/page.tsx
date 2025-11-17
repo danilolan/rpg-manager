@@ -1,8 +1,16 @@
 'use client'
 
+import { useState } from 'react'
 import { CharacterFormDrawer } from "@/components/organisms/character-form-drawer"
+import { CharacterGallery } from "@/components/organisms/character-gallery"
 
 export default function CharactersPage() {
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
+
+  const handleCharacterCreated = () => {
+    setRefreshTrigger(prev => prev + 1)
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -12,14 +20,10 @@ export default function CharactersPage() {
             Manage your RPG characters
           </p>
         </div>
-        <CharacterFormDrawer />
+        <CharacterFormDrawer onCharacterCreated={handleCharacterCreated} />
       </div>
       
-      <div className="rounded-lg border bg-card p-6">
-        <p className="text-muted-foreground text-center py-8">
-          No characters yet. Create your first character to get.
-        </p>
-      </div>
+      <CharacterGallery refreshTrigger={refreshTrigger} />
     </div>
   )
 }

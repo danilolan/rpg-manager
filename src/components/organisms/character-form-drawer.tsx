@@ -88,22 +88,18 @@ export function CharacterFormDrawer({ onCharacterCreated }: CharacterFormDrawerP
         weight: formData.weight ? parseFloat(formData.weight) : undefined,
         height: formData.height ? parseFloat(formData.height) : undefined,
         attributes: {
-          create: {
-            strength: parseInt(formData.attributes.strength) || 0,
-            intelligence: parseInt(formData.attributes.intelligence) || 0,
-            dexterity: parseInt(formData.attributes.dexterity) || 0,
-            perception: parseInt(formData.attributes.perception) || 0,
-            constitution: parseInt(formData.attributes.constitution) || 0,
-            willPower: parseInt(formData.attributes.willPower) || 0,
-          },
+          strength: parseInt(formData.attributes.strength) || 0,
+          intelligence: parseInt(formData.attributes.intelligence) || 0,
+          dexterity: parseInt(formData.attributes.dexterity) || 0,
+          perception: parseInt(formData.attributes.perception) || 0,
+          constitution: parseInt(formData.attributes.constitution) || 0,
+          willPower: parseInt(formData.attributes.willPower) || 0,
         },
         status: {
-          create: {
-            life: parseInt(formData.status.life) || 0,
-            endurance: parseInt(formData.status.endurance) || 0,
-            speed: parseInt(formData.status.speed) || 0,
-            maxLoad: parseFloat(formData.status.maxLoad) || 0,
-          },
+          life: parseInt(formData.status.life) || 0,
+          endurance: parseInt(formData.status.endurance) || 0,
+          speed: parseInt(formData.status.speed) || 0,
+          maxLoad: parseFloat(formData.status.maxLoad) || 0,
         },
       }
 
