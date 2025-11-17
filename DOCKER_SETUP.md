@@ -75,6 +75,22 @@ npm run docker:down
 npm run docker:reset
 ```
 
+## Database Seeding
+
+The project includes a seed script that populates the database with 5 sample characters. Each character includes:
+- Random attributes (strength, intelligence, dexterity, etc.)
+- Status values (life, endurance, speed, max load)
+- 2 skills (Swordsmanship, Stealth)
+- 1 quality (Quick Reflexes)
+- 1 drawback (Fear of Heights)
+
+**Seed characters:**
+1. Aria Shadowblade (PLAYER)
+2. Marcus Ironheart (PLAYER)
+3. Elena Moonwhisper (NPC)
+4. Viktor Stormborn (ALLY)
+5. Selena Nightshade (MONSTER)
+
 ## 🔥 Recommended: Local Development with Hot Reload
 
 **Best for development!** Run only the database in Docker and Next.js locally for fast hot reload.
@@ -121,7 +137,7 @@ npm run db:start
 
 This starts PostgreSQL in Docker and runs in the background (`-d` flag).
 
-#### 4. Setup Prisma (First Time Only)
+#### 4. Setup Prisma and Seed Database (First Time Only)
 
 ```bash
 # Generate Prisma Client types
@@ -129,6 +145,14 @@ npm run prisma:generate
 
 # Push schema to database
 npm run prisma:push
+
+# Seed database with sample data
+npm run prisma:seed
+```
+
+**Or use the all-in-one command:**
+```bash
+npm run db:seed
 ```
 
 #### 5. Run Next.js Locally
@@ -163,6 +187,15 @@ npm run db:stop
 # Reset database (deletes all data and restarts)
 npm run db:reset
 
+# Seed database with sample data
+npm run prisma:seed
+
+# Push schema + seed in one command
+npm run db:seed
+
+# Setup everything (start DB + push schema + seed)
+npm run db:setup
+
 # View database in Prisma Studio
 npm run prisma:studio
 ```
@@ -187,6 +220,8 @@ See the "Quick Start (Docker)" section at the top for full details.
 - `npm run db:start` - Start PostgreSQL in Docker (background)
 - `npm run db:stop` - Stop PostgreSQL
 - `npm run db:reset` - Reset database (delete all data and restart)
+- `npm run db:seed` - Push schema and seed with sample data
+- `npm run db:setup` - Complete setup (start + push + seed)
 
 ### Full Docker Scripts
 - `npm run docker:dev` - Start all services (app + database)
@@ -199,7 +234,7 @@ See the "Quick Start (Docker)" section at the top for full details.
 - `npm run prisma:push` - Push schema to database (no migrations)
 - `npm run prisma:migrate` - Create and run migrations
 - `npm run prisma:studio` - Open Prisma Studio (database GUI)
-- `npm run prisma:seed` - Run database seeds
+- `npm run prisma:seed` - Seed database with 5 sample characters
 
 ### Next.js Scripts
 - `npm run dev` - Start development server

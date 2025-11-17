@@ -11,14 +11,19 @@
     "prisma:push": "prisma db push",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "prisma db seed",
+    "prisma:seed": "tsx prisma/seed.ts",
     "db:start": "docker-compose up postgres -d",
     "db:stop": "docker-compose stop postgres",
     "db:reset": "docker-compose down -v && docker-compose up postgres -d",
+    "db:seed": "npm run prisma:push && npm run prisma:seed",
+    "db:setup": "npm run db:start && timeout /t 3 /nobreak && npm run db:seed",
     "docker:dev": "docker-compose up",
     "docker:dev:build": "docker-compose up --build",
     "docker:down": "docker-compose down",
     "docker:reset": "docker-compose down -v && docker-compose up --build"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",
@@ -47,6 +52,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
     "tailwindcss": "^4",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   }
 }

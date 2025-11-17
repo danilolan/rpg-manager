@@ -1,251 +1,148 @@
-# RPG Manager - Docker Setup Guide
+# RPG Manager
 
-This guide covers local development and deployment setup using Docker and Docker Compose.
+A modern RPG character management system built with Next.js, Prisma, and PostgreSQL.
 
-## Prerequisites
+## Features
 
-- Docker Desktop installed (Windows/Mac) or Docker + Docker Compose (Linux)
+- ✅ Create and manage RPG characters
+- ✅ Character attributes system (Strength, Intelligence, Dexterity, etc.)
+- ✅ Status tracking (Life, Endurance, Speed, Max Load)
+- ✅ Skills, Qualities, and Drawbacks system
+- ✅ Multiple character categories (Player, NPC, Zombie, Monster, Ally)
+- ✅ RESTful API
+- ✅ Docker support for easy deployment
+- ✅ Database seeding with sample data
+
+## Tech Stack
+
+- **Frontend:** Next.js 16, React 19, TailwindCSS
+- **Backend:** Next.js API Routes (Server-Side)
+- **Database:** PostgreSQL 16
+- **ORM:** Prisma
+- **UI Components:** Radix UI, shadcn/ui
+- **Container:** Docker & Docker Compose
+
+## Quick Start
+
+### 1. Prerequisites
+
+- Node.js 20+
+- Docker Desktop
 - Git
-- Node.js 20+ (for local development without Docker)
 
-## Architecture
-
-The application consists of three services:
-
-1. **postgres** - PostgreSQL 16 database
-2. **prisma-migrate** - One-time migration service that runs Prisma migrations
-3. **app** - Next.js application
-
-## Quick Start (Docker)
-
-### 1. Clone and Setup Environment
+### 2. Clone and Install
 
 ```bash
-# Clone the repository
 git clone <your-repo-url>
 cd rpg-manager
-
-# Create .env file from example
-# Note: .env.example creation was blocked, so create it manually
+npm install
 ```
 
-Create a `.env` file in the root directory:
-
-```env
-# Database Configuration
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_DB=rpg_manager
-POSTGRES_PORT=5432
-
-# Application Configuration
-APP_PORT=3000
-NODE_ENV=development
-
-# Prisma Database URL (for local development outside Docker)
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/rpg_manager?schema=public"
-```
-
-### 2. Start the Application
+### 3. Setup Database
 
 ```bash
-# Start all services (first time - builds images)
-npm run docker:dev:build
-
-# Or for subsequent runs
-npm run docker:dev
-
-# The application will be available at:
-# - App: http://localhost:3000
-# - Database: localhost:5432
-```
-
-The startup sequence:
-1. PostgreSQL starts and waits until healthy
-2. Prisma migration service runs `prisma generate` and `prisma db push`
-3. Next.js app starts once migrations are complete
-
-### 3. Stop the Application
-
-```bash
-# Stop all services
-npm run docker:down
-
-# Stop and remove all data (reset database)
-npm run docker:reset
-```
-
-## 🔥 Recommended: Local Development with Hot Reload
-
-**Best for development!** Run only the database in Docker and Next.js locally for fast hot reload.
-
-### Why This Approach?
-
-- ✅ **Fast hot reload** - Changes reflect instantly
-- ✅ **Better performance** - No Docker overhead for Next.js
-- ✅ **Easy debugging** - Direct access to Node.js process
-- ✅ **Same deployment** - Docker setup unchanged for production
-
-### Setup
-
-#### 1. Stop Full Docker Stack (if running)
-
-```bash
-npm run docker:down
-```
-
-#### 2. Create `.env` File
-
-Create a `.env` file in the project root:
-
-```env
-# Database Configuration
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_DB=rpg_manager
-POSTGRES_PORT=5432
-
-# Application Configuration
-APP_PORT=3000
-NODE_ENV=development
-
-# Prisma Database URL (connects to Docker PostgreSQL)
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/rpg_manager?schema=public"
-```
-
-#### 3. Start Only the Database
-
-```bash
+# Start PostgreSQL in Docker
 npm run db:start
+
+# Setup database schema and seed with sample data
+npm run db:seed
 ```
 
-This starts PostgreSQL in Docker and runs in the background (`-d` flag).
-
-#### 4. Setup Prisma (First Time Only)
-
-```bash
-# Generate Prisma Client types
-npm run prisma:generate
-
-# Push schema to database
-npm run prisma:push
-```
-
-#### 5. Run Next.js Locally
+### 4. Run Development Server
 
 ```bash
 npm run dev
 ```
 
-🎉 **Done!** App runs at http://localhost:3000 with full hot reload.
-
-### Daily Workflow
-
-```bash
-# Start database (if not running)
-npm run db:start
-
-# Start Next.js
-npm run dev
-
-# That's it! Make changes and see them instantly.
-```
-
-### Database Management Commands
-
-```bash
-# Start database
-npm run db:start
-
-# Stop database (keeps data)
-npm run db:stop
-
-# Reset database (deletes all data and restarts)
-npm run db:reset
-
-# View database in Prisma Studio
-npm run prisma:studio
-```
-
-## Alternative: Full Docker Stack (No Hot Reload)
-
-If you prefer to run everything in Docker (note: hot reload is slower):
-
-```bash
-# Start all services
-npm run docker:dev:build
-
-# Stop all services
-npm run docker:down
-```
-
-See the "Quick Start (Docker)" section at the top for full details.
+Visit [http://localhost:3000](http://localhost:3000)
 
 ## Available Scripts
 
-### Database-Only Scripts (Recommended for Local Dev)
-- `npm run db:start` - Start PostgreSQL in Docker (background)
-- `npm run db:stop` - Stop PostgreSQL
-- `npm run db:reset` - Reset database (delete all data and restart)
-
-### Full Docker Scripts
-- `npm run docker:dev` - Start all services (app + database)
-- `npm run docker:dev:build` - Build and start all services
-- `npm run docker:down` - Stop all services
-- `npm run docker:reset` - Stop services, remove volumes, rebuild and start
-
-### Prisma Scripts
-- `npm run prisma:generate` - Generate Prisma Client
-- `npm run prisma:push` - Push schema to database (no migrations)
-- `npm run prisma:migrate` - Create and run migrations
-- `npm run prisma:studio` - Open Prisma Studio (database GUI)
-- `npm run prisma:seed` - Run database seeds
-
-### Next.js Scripts
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-
-## Database Management
-
-### Prisma Studio
-
-Open a visual database editor:
-
+### Development
 ```bash
-# If running with Docker
-docker exec -it rpg-manager-app npm run prisma:studio
-
-# If running locally
-npm run prisma:studio
+npm run dev              # Start Next.js dev server with hot reload
+npm run build            # Build for production
+npm run start            # Start production server
+npm run lint             # Run ESLint
 ```
 
-Access at: http://localhost:5555
-
-### Database Migrations
-
-For production, use migrations instead of `db push`:
-
+### Database
 ```bash
-# Create a new migration
-npx prisma migrate dev --name your_migration_name
-
-# Apply migrations in production
-npx prisma migrate deploy
+npm run db:start         # Start PostgreSQL in Docker (background)
+npm run db:stop          # Stop PostgreSQL
+npm run db:reset         # Reset database (delete all data)
+npm run db:seed          # Push schema + seed with 5 sample characters
+npm run db:setup         # Complete setup (start + push + seed)
 ```
 
-### Reset Database
-
+### Prisma
 ```bash
-# Database only (recommended for local dev)
-npm run db:reset
+npm run prisma:generate  # Generate Prisma Client types
+npm run prisma:push      # Push schema to database
+npm run prisma:migrate   # Create and run migrations
+npm run prisma:studio    # Open Prisma Studio (DB GUI at localhost:5555)
+npm run prisma:seed      # Seed database with sample characters
+```
 
-# Full Docker stack (removes all data)
-npm run docker:reset
+### Docker (Full Stack)
+```bash
+npm run docker:dev       # Start app + database in Docker
+npm run docker:dev:build # Build and start in Docker
+npm run docker:down      # Stop all services
+npm run docker:reset     # Reset everything (remove volumes + rebuild)
+```
 
-# Or manually with Prisma
-npx prisma migrate reset
+## Database Schema
+
+### Character
+- Basic info: name, category, age, weight, height
+- One-to-one: Attributes, Status
+- One-to-many: Skills, Qualities, Drawbacks
+
+### Attributes
+- Strength, Intelligence, Dexterity
+- Perception, Constitution, Will Power
+
+### Status
+- Life, Endurance, Speed, Max Load
+
+### Skills / Qualities / Drawbacks
+- Name, Level, Description
+
+## API Endpoints
+
+### Characters
+
+```
+GET    /api/characters        # List all characters
+POST   /api/characters        # Create a character
+GET    /api/characters/:id    # Get single character
+PATCH  /api/characters/:id    # Update character
+DELETE /api/characters/:id    # Delete character
+```
+
+**Example: Create Character**
+```bash
+curl -X POST http://localhost:3000/api/characters \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Hero Name",
+    "category": "PLAYER",
+    "attributes": {
+      "strength": 10,
+      "intelligence": 12,
+      "dexterity": 8,
+      "perception": 10,
+      "constitution": 11,
+      "willPower": 9
+    },
+    "status": {
+      "life": 100,
+      "endurance": 80,
+      "speed": 15,
+      "maxLoad": 50
+    }
+  }'
 ```
 
 ## Project Structure
@@ -253,88 +150,101 @@ npx prisma migrate reset
 ```
 rpg-manager/
 ├── prisma/
-│   └── schema.prisma          # Database schema
+│   ├── schema.prisma       # Database schema
+│   └── seed.ts            # Database seed script
 ├── src/
-│   ├── app/                   # Next.js app directory
-│   ├── components/            # React components
-│   ├── lib/
-│   │   └── prisma.ts          # Prisma client singleton
-│   └── types/                 # TypeScript types
-├── docker-compose.yml         # Docker Compose configuration
-├── Dockerfile                 # Multi-stage Docker build
-├── .dockerignore              # Docker ignore patterns
-├── .env                       # Environment variables (not in git)
-└── package.json               # Dependencies and scripts
+│   ├── app/
+│   │   ├── api/           # API routes
+│   │   ├── characters/    # Characters page
+│   │   └── layout.tsx     # Root layout
+│   ├── components/
+│   │   ├── organisms/     # Complex components
+│   │   └── ui/           # shadcn/ui components
+│   └── lib/
+│       └── prisma.ts      # Prisma client singleton
+├── docker-compose.yml      # Docker services config
+├── Dockerfile             # Multi-stage build
+└── package.json           # Dependencies & scripts
 ```
 
-## Environment Variables
+## Development Workflow
 
-### Development
-- Database automatically connects to `postgres` service in Docker
-- DATABASE_URL is set in docker-compose.yml
+### Recommended: Local Dev with Hot Reload
 
-### Production
-Set these environment variables:
-- `DATABASE_URL` - PostgreSQL connection string
-- `NODE_ENV=production`
+1. Start database in Docker:
+```bash
+npm run db:start
+```
 
-## CI/CD Preparation
+2. Run Next.js locally:
+```bash
+npm run dev
+```
 
-The current setup is ready for CI/CD with GitHub Actions. The Dockerfile includes:
+This gives you:
+- ✅ Instant hot reload
+- ✅ Fast development cycle
+- ✅ Isolated database
+- ✅ Easy debugging
 
-- **Multi-stage build** (development and production targets)
-- **Optimized layers** for faster builds
-- **Prisma generation** in build stage
-- **Security** (non-root user in production)
-
-### Production Deployment
+### Alternative: Full Docker Stack
 
 ```bash
-# Build production image
-docker build --target production -t rpg-manager:latest .
+npm run docker:dev:build
+```
 
-# Run production container
+Note: Hot reload is slower in Docker.
+
+## Database Seeding
+
+The seed script creates 5 sample characters:
+
+1. **Aria Shadowblade** (PLAYER) - Agile rogue
+2. **Marcus Ironheart** (PLAYER) - Strong warrior
+3. **Elena Moonwhisper** (NPC) - Mysterious mage
+4. **Viktor Stormborn** (ALLY) - Powerful ally
+5. **Selena Nightshade** (MONSTER) - Dangerous foe
+
+Each character includes random stats, 2 skills, 1 quality, and 1 drawback.
+
+Run the seed:
+```bash
+npm run prisma:seed
+```
+
+## Deployment
+
+### Docker Production Build
+
+```bash
+docker build --target production -t rpg-manager:latest .
 docker run -p 3000:3000 \
-  -e DATABASE_URL="your-production-db-url" \
+  -e DATABASE_URL="postgresql://..." \
   -e NODE_ENV=production \
   rpg-manager:latest
 ```
 
+### CI/CD Ready
+
+The Docker setup is ready for:
+- GitHub Actions
+- GitLab CI
+- Jenkins
+- Any container orchestration platform
+
 ## Troubleshooting
 
-### Hot Reload Not Working in Docker
-
-**Solution:** Use the recommended local development workflow (database-only in Docker):
-
-```bash
-# Stop full Docker stack
-npm run docker:down
-
-# Start only database
-npm run db:start
-
-# Run Next.js locally
-npm run dev
-```
-
-This gives you instant hot reload while keeping the database isolated.
-
 ### Port Already in Use
-
 ```bash
-# Check what's using port 3000 or 5432
-# Windows PowerShell
+# Check what's using port 3000
 netstat -ano | findstr :3000
-netstat -ano | findstr :5432
 
-# Kill the process or change APP_PORT/POSTGRES_PORT in .env
+# Change port in .env or stop the process
 ```
 
 ### Database Connection Issues
-
-**For Local Dev (db:start):**
 ```bash
-# Check if postgres is running
+# Check if DB is running
 docker ps
 
 # View logs
@@ -345,60 +255,28 @@ npm run db:stop
 npm run db:start
 ```
 
-**For Full Docker Stack:**
-```bash
-# Check if postgres is healthy
-docker-compose ps
-
-# View logs
-docker-compose logs postgres
-docker-compose logs app
-
-# Restart services
-npm run docker:reset
-```
-
 ### Prisma Client Not Generated
-
-**For Local Dev:**
 ```bash
-# Regenerate Prisma Client
 npm run prisma:generate
 ```
 
-**For Docker:**
-```bash
-# Regenerate in container
-docker exec -it rpg-manager-app npm run prisma:generate
+## Documentation
 
-# Or rebuild everything
-npm run docker:reset
-```
+- [Docker Setup Guide](./DOCKER_SETUP.md) - Comprehensive Docker documentation
+- [Prisma Schema](./prisma/schema.prisma) - Database schema definition
 
-### Changes Not Reflecting
+## Contributing
 
-**For Local Dev (Recommended):**
-- Next.js hot reload should work automatically
-- If not, restart: `Ctrl+C` and `npm run dev`
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run `npm run lint`
+5. Submit a pull request
 
-**For Docker:**
-```bash
-# Rebuild containers (hot reload is slower in Docker)
-npm run docker:dev:build
-```
+## License
 
-## Next Steps
+MIT
 
-1. Configure GitHub Actions workflow for CI/CD
-2. Set up production database (e.g., Railway, Supabase, Neon)
-3. Add database seeding for initial data
-4. Configure environment-specific settings
-5. Set up monitoring and logging
+## Support
 
-## Additional Resources
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Prisma Documentation](https://www.prisma.io/docs)
-- [Docker Documentation](https://docs.docker.com/)
-- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
-
+For issues and questions, please open an issue on GitHub.

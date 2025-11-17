@@ -62,7 +62,7 @@ services:
       - /app/node_modules
     networks:
       - rpg-network
-    command: sh -c "npx prisma generate && npx prisma db push"
+    command: sh -c "npx prisma generate && npx prisma db push && npm run prisma:seed"
 
 volumes:
   postgres_data:
