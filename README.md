@@ -29,8 +29,10 @@ DATABASE_URL="postgresql://postgres:postgres@localhost:5432/rpg_manager?schema=p
 ```
 
 ```bash
-# 3. Start PostgreSQL database in Docker
+# 3. Start PostgreSQL database in Docker (auto-pulls image on first run)
 npm run db:start
+
+# Wait 5 seconds for database to be ready, then:
 
 # 4. Generate Prisma Client (creates TypeScript types)
 npm run prisma:generate
