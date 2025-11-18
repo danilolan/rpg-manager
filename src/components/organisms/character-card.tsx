@@ -82,40 +82,73 @@ export interface CharacterCardStatus {
   speed: number
 }
 
-export interface CharacterCardProps extends VariantProps<typeof characterCardVariants> {
+export interface Character {
+  id: string
   name: string
   category: CharacterCategory
-  level: number
+  age?: number | null
+  weight?: number | null
+  height?: number | null
+  level?: number
   race?: string
   class?: string
-  attributes: CharacterCardAttributes
-  status: CharacterCardStatus
-  skills: CollapsibleSectionItem[]
-  qualities: CollapsibleSectionItem[]
-  drawbacks: CollapsibleSectionItem[]
+  attributes: CharacterCardAttributes | null
+  status: CharacterCardStatus | null
+  skills: Array<CollapsibleSectionItem & { id?: string }>
+  qualities: Array<CollapsibleSectionItem & { id?: string }>
+  drawbacks: Array<CollapsibleSectionItem & { id?: string }>
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface CharacterCardProps extends VariantProps<typeof characterCardVariants> {
+  character: Character
+  variant?: "full" | "compact"
   className?: string
 }
 
 export function CharacterCard({
-  name,
-  category,
-  level,
-  race,
-  class: characterClass,
-  attributes,
-  status,
-  skills,
-  qualities,
-  drawbacks,
+  character,
+  variant = "full",
   className,
 }: CharacterCardProps) {
+  const { name, category, level, race, class: characterClass, age, weight, height, attributes, status, skills, qualities, drawbacks } = character
 
-  const subtitle = [race, characterClass && `${characterClass} Lv ${level}`]
+  const subtitleParts = [
+    race,
+    characterClass && level ? `${characterClass} Lv ${level}` : characterClass,
+    age ? `${age} anos` : null,
+    weight ? `${weight}kg` : null,
+    height ? `${height}cm` : null,
+  ]
+  
+  const subtitle = subtitleParts
     .filter(Boolean)
     .join(" • ")
 
+  // Default values for attributes and status if they are null
+  const safeAttributes = attributes || {
+    strength: 0,
+    intelligence: 0,
+    dexterity: 0,
+    perception: 0,
+    constitution: 0,
+    willPower: 0,
+  }
+
+  const safeStatus = status || {
+    life: 0,
+    endurance: 0,
+    speed: 0,
+    maxLoad: 0,
+  }
+
   return (
-    <div className={cn(characterCardVariants({ category }), className)}>
+    <div className={cn(
+      characterCardVariants({ category }),
+      variant === "compact" && "cursor-pointer hover:scale-105 transition-transform",
+      className
+    )}>
       {/* Header Banner */}
       <div className={cn(headerBannerVariants({ category }))}>
         <div className="relative z-10">
@@ -126,34 +159,37 @@ export function CharacterCard({
         </div>
       </div>
 
-      <div className="p-4 space-y-4">
-        {/* Status */}
-        <div className="flex gap-3 flex-wrap justify-between">
-          <StatBox label="Life" value={status.life} size="big" variant="blue" />
-          <StatBox label="END" value={status.endurance} size="big" variant="green" />
-          <StatBox label="M. Load" value={status.maxLoad} size="big" variant="muted" />
-          <StatBox label="Speed" value={status.speed} size="big" variant="yellow" />
-        </div>
+      {/* Show full content only if variant is "full" */}
+      {variant === "full" && (
+        <div className="p-4 space-y-4">
+          {/* Status */}
+          <div className="flex gap-2 flex-wrap justify-between">
+            <StatBox label="Life" value={safeStatus.life} size="big" variant="blue" />
+            <StatBox label="END" value={safeStatus.endurance} size="big" variant="green" />
+            <StatBox label="M. Load" value={safeStatus.maxLoad} size="big" variant="muted" />
+            <StatBox label="Speed" value={safeStatus.speed} size="big" variant="yellow" />
+          </div>
 
-        <Separator />
+          <Separator />
 
-        {/* Core Attributes */}
-        <div className="flex gap-2 flex-wrap justify-between">
-          <StatBox label="STR" value={attributes.strength} />
-          <StatBox label="INT" value={attributes.intelligence} />
-          <StatBox label="DEX" value={attributes.dexterity} />
-          <StatBox label="CON" value={attributes.constitution} />
-          <StatBox label="DET" value={attributes.willPower} />
-          <StatBox label="PER" value={attributes.perception} />
-        </div>
+          {/* Core Attributes */}
+          <div className="flex gap-1.5 flex-wrap justify-between">
+            <StatBox label="STR" value={safeAttributes.strength} />
+            <StatBox label="INT" value={safeAttributes.intelligence} />
+            <StatBox label="DEX" value={safeAttributes.dexterity} />
+            <StatBox label="CON" value={safeAttributes.constitution} />
+            <StatBox label="DET" value={safeAttributes.willPower} />
+            <StatBox label="PER" value={safeAttributes.perception} />
+          </div>
 
-        {/* Collapsible Sections */}
-        <div className="space-y-2">
-          <CollapsibleSection title="Skills" items={skills} />
-          <CollapsibleSection title="Qualities" items={qualities} />
-          <CollapsibleSection title="Drawbacks" items={drawbacks} />
+          {/* Collapsible Sections */}
+          <div className="space-y-2">
+            <CollapsibleSection title="Skills" items={skills} />
+            <CollapsibleSection title="Qualities" items={qualities} />
+            <CollapsibleSection title="Drawbacks" items={drawbacks} />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

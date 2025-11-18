@@ -1,15 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
-
-interface Character {
-  id: string
-  name: string
-  category: string
-  createdAt: string
-}
+import { CharacterCard, type Character } from '@/components/organisms/character-card'
 
 interface CharacterGalleryProps {
   refreshTrigger?: number
@@ -73,15 +66,13 @@ export function CharacterGallery({ refreshTrigger }: CharacterGalleryProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {characters.map((character) => (
-        <div
+        <CharacterCard
           key={character.id}
-          className="rounded-lg border bg-card p-4 hover:bg-accent/50 transition-colors cursor-pointer"
-        >
-          <Label className="text-base font-semibold">{character.name}</Label>
-          <p className="text-sm text-muted-foreground mt-1">{character.category}</p>
-        </div>
+          character={character}
+          variant="compact"
+        />
       ))}
     </div>
   )
