@@ -174,19 +174,22 @@ export default function CombatPage() {
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[600px] overflow-y-auto pr-2">
                 {combatants.map((combatant) => (
-                  <div key={combatant.instanceId} className="relative">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute top-2 right-2 z-10 h-7 w-7 bg-black/80 hover:bg-red-900"
-                      onClick={() => removeFromCombat(combatant.instanceId)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
+                  <div key={combatant.instanceId} className="relative group">
                     <CharacterCard
                       character={combatant.character}
                       variant="compact"
                     />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute top-2 right-2 z-50 h-8 w-8 bg-red-900/90 hover:bg-red-800 border border-red-500 opacity-100"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        removeFromCombat(combatant.instanceId)
+                      }}
+                    >
+                      <X className="h-4 w-4 text-white" />
+                    </Button>
                   </div>
                 ))}
               </div>
