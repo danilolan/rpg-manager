@@ -146,7 +146,6 @@ export function CharacterCard({
   return (
     <div className={cn(
       characterCardVariants({ category }),
-      variant === "compact" && "cursor-pointer hover:scale-105 transition-transform",
       className
     )}>
       {/* Header Banner */}
