@@ -8,8 +8,8 @@ const statBoxVariants = cva(
   {
     variants: {
       size: {
-        default: "bg-secondary/50 border-border p-1 min-w-[40px]",
-        big: "p-1.5 min-w-[50px] rounded-xl",
+        default: "bg-secondary/50 border-border p-0.5 min-w-[36px]",
+        big: "p-1 min-w-[44px] rounded-xl",
       },
       variant: {
         default: "bg-secondary/50 border-border",
@@ -35,8 +35,8 @@ const valueVariants = cva(
   {
     variants: {
       size: {
-        default: "text-lg",
-        big: "text-xl",
+        default: "text-base",
+        big: "text-lg",
       },
       variant: {
         default: "text-destructive",
@@ -62,8 +62,8 @@ const labelVariants = cva(
   {
     variants: {
       size: {
-        default: "text-[10px]",
-        big: "text-xs",
+        default: "text-[9px]",
+        big: "text-[10px]",
       },
     },
     defaultVariants: {
