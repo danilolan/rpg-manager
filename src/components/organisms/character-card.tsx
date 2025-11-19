@@ -1,5 +1,6 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
+import { Heart } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { StatBox } from "@/components/atoms/stat-box"
@@ -266,10 +267,13 @@ export function CharacterCard({
                 {headerAction}
               </div>
             )}
-            {variant === "compact" && (
+            {variant !== "mini" && (
               <div className="ml-4">
                 <div className={cn("flex flex-col items-center justify-center rounded-xl border p-1 min-w-[44px]", getLifeBoxBg(category))}>
-                  <span className="text-muted-foreground uppercase tracking-wide font-bold text-[10px]">Life</span>
+                  <span className="text-muted-foreground uppercase tracking-wide font-bold text-[10px] flex items-center gap-1">
+                    <Heart className="h-3 w-3 text-red-400 fill-red-500" />
+                    <span>Life</span>
+                  </span>
                   <span className="font-bold text-lg text-white">
                     {safeStatus.life}
                   </span>
@@ -283,18 +287,8 @@ export function CharacterCard({
       {/* Show full content only if variant is "full" */}
       {variant === "full" && (
         <div className="p-4 space-y-4">
-          {/* Status */}
-          <div className="flex gap-2 flex-wrap justify-between">
-            <StatBox label="Life" value={safeStatus.life} size="big" variant="blue" />
-            <StatBox label="END" value={safeStatus.endurance} size="big" variant="green" />
-            <StatBox label="M. Load" value={safeStatus.maxLoad} size="big" variant="muted" />
-            <StatBox label="Speed" value={safeStatus.speed} size="big" variant="yellow" />
-          </div>
-
-          <Separator />
-
           {/* Core Attributes */}
-          <div className="flex gap-1.5 flex-wrap justify-between">
+          <div className="grid grid-cols-6 gap-2">
             <StatBox label="STR" value={safeAttributes.strength} />
             <StatBox label="INT" value={safeAttributes.intelligence} />
             <StatBox label="DEX" value={safeAttributes.dexterity} />
@@ -302,6 +296,36 @@ export function CharacterCard({
             <StatBox label="DET" value={safeAttributes.willPower} />
             <StatBox label="PER" value={safeAttributes.perception} />
           </div>
+
+          {/* Status (without Life) - each spans 2 columns (double width) */}
+          <div className="grid grid-cols-6 gap-2">
+            <div className="col-span-2">
+              <StatBox
+                label="END"
+                value={safeStatus.endurance}
+                size="big"
+                variant="green"
+              />
+            </div>
+            <div className="col-span-2">
+              <StatBox
+                label="Load"
+                value={safeStatus.maxLoad}
+                size="big"
+                variant="muted"
+              />
+            </div>
+            <div className="col-span-2">
+              <StatBox
+                label="Speed"
+                value={safeStatus.speed}
+                size="big"
+                variant="yellow"
+              />
+            </div>
+          </div>
+
+          <Separator />
 
           {/* Collapsible Sections */}
           <div className="space-y-2">

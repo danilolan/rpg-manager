@@ -38,8 +38,10 @@ export default function RootLayout({
               <Separator orientation="vertical" className="h-6" />
               <h1 className="text-lg font-semibold">RPG Manager</h1>
             </header>
-            <main className="flex-1 bg-background p-6">
-              {children}
+            <main className="flex-1 bg-background h-[calc(100vh-4rem)] overflow-hidden">
+              <div className="h-full p-6 flex flex-col">
+                {children}
+              </div>
             </main>
           </SidebarInset>
         </SidebarProvider>

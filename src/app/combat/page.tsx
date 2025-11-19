@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { CombatSetup } from '@/components/organisms/combat-setup'
 import { CombatInitiative, type CombatantWithInitiative } from '@/components/organisms/combat-initiative'
-import { CombatArena } from '@/components/organisms/combat-arena'
+import { CombatArena, getTurnOrder } from '@/components/organisms/combat-arena'
 import type { Character } from '@/components/organisms/character-card'
 
 type CombatStep = 'setup' | 'initiative' | 'combat'
@@ -61,8 +61,8 @@ export default function CombatPage() {
   }
 
   const startCombat = () => {
-    // Sort by initiative (highest first)
-    const sorted = [...combatants].sort((a, b) => (b.initiative || 0) - (a.initiative || 0))
+    // Centralized sort by initiative (highest first)
+    const sorted = getTurnOrder(combatants)
     setCombatants(sorted)
     setCurrentStep('combat')
   }
