@@ -10,7 +10,7 @@ interface Combatant {
 }
 
 interface CombatRosterProps {
-  combatants: Combatant[]
+  combatants: Array<{ instanceId: string; character: Character }>
   onRemove: (instanceId: string) => void
 }
 
