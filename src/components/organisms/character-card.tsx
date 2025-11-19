@@ -25,15 +25,15 @@ const characterCardVariants = cva(
 )
 
 const headerBannerVariants = cva(
-  "p-4 space-y-1 bg-gradient-to-r relative overflow-hidden border-b-2",
+  "p-4 space-y-1 relative overflow-hidden border-b-2",
   {
     variants: {
       category: {
-        PLAYER: "from-blue-900/40 from-0% to-black/80 to-100% via-blue-900/40 via-80% border-blue-500",
-        NPC: "from-green-900/40 from-0% to-black/80 to-100% via-green-900/40 via-80% border-green-500",
-        ALLY: "from-purple-900/40 from-0% to-black/80 to-100% via-purple-900/40 via-80% border-purple-500",
-        MONSTER: "from-red-900/40 from-0% to-black/80 to-100% via-red-900/40 via-80% border-red-500",
-        ZOMBIE: "from-red-900/40 from-0% to-black/80 to-100% via-red-900/40 via-80% border-red-500",
+        PLAYER: "bg-blue-900/60 border-blue-500",
+        NPC: "bg-green-900/60 border-green-500",
+        ALLY: "bg-purple-900/60 border-purple-500",
+        MONSTER: "bg-red-900/60 border-red-500",
+        ZOMBIE: "bg-red-900/60 border-red-500",
       },
     },
     defaultVariants: {
@@ -60,6 +60,28 @@ function getSubtitleColor(category: CharacterCategory): string {
     ALLY: "text-purple-300/90",
     MONSTER: "text-red-400/90",
     ZOMBIE: "text-red-400/90",
+  }
+  return colors[category]
+}
+
+function getStatusValueColor(category: CharacterCategory): string {
+  const colors = {
+    PLAYER: "text-blue-400",
+    NPC: "text-green-400",
+    ALLY: "text-purple-400",
+    MONSTER: "text-red-400",
+    ZOMBIE: "text-red-400",
+  }
+  return colors[category]
+}
+
+function getLifeBoxBg(category: CharacterCategory): string {
+  const colors = {
+    PLAYER: "bg-blue-950/30 border-blue-800",
+    NPC: "bg-green-950/30 border-green-800",
+    ALLY: "bg-purple-950/30 border-purple-800",
+    MONSTER: "bg-red-950/30 border-red-800",
+    ZOMBIE: "bg-red-950/30 border-red-800",
   }
   return colors[category]
 }
@@ -150,10 +172,22 @@ export function CharacterCard({
     )}>
       {/* Header Banner */}
       <div className={cn(headerBannerVariants({ category }))}>
-        <div className="relative z-10">
-          <h3 className={cn("text-xl font-bold", getTitleColor(category))}>{name}</h3>
-          {subtitle && (
-            <p className={cn("text-sm", getSubtitleColor(category))}>{subtitle}</p>
+        <div className="relative z-10 flex items-center justify-between">
+          <div>
+            <h3 className={cn("text-xl font-bold", getTitleColor(category))}>{name}</h3>
+            {subtitle && (
+              <p className={cn("text-sm", getSubtitleColor(category))}>{subtitle}</p>
+            )}
+          </div>
+          {variant === "compact" && (
+            <div className="shrink-0 ml-4">
+              <div className={cn("flex flex-col items-center justify-center rounded-xl border p-1 min-w-[44px]", getLifeBoxBg(category))}>
+                <span className="text-muted-foreground uppercase tracking-wide font-bold text-[10px]">Life</span>
+                <span className="font-bold text-lg text-white">
+                  {safeStatus.life}
+                </span>
+              </div>
+            </div>
           )}
         </div>
       </div>
@@ -186,6 +220,79 @@ export function CharacterCard({
             <CollapsibleSection title="Skills" items={skills} />
             <CollapsibleSection title="Qualities" items={qualities} />
             <CollapsibleSection title="Drawbacks" items={drawbacks} />
+          </div>
+        </div>
+      )}
+
+      {/* Compact variant: show attributes and status at bottom */}
+      {variant === "compact" && (
+        <div className="p-2 space-y-1.5 border-t-2 border-border/50">
+          {/* Attributes - 6 columns */}
+          <div className="grid grid-cols-6 gap-1">
+            <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
+              <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">STR</span>
+              <span className={cn("font-bold text-base", getStatusValueColor(category))}>
+                {safeAttributes.strength}
+              </span>
+            </div>
+            <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
+              <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">INT</span>
+              <span className={cn("font-bold text-base", getStatusValueColor(category))}>
+                {safeAttributes.intelligence}
+              </span>
+            </div>
+            <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
+              <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">DEX</span>
+              <span className={cn("font-bold text-base", getStatusValueColor(category))}>
+                {safeAttributes.dexterity}
+              </span>
+            </div>
+            <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
+              <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">CON</span>
+              <span className={cn("font-bold text-base", getStatusValueColor(category))}>
+                {safeAttributes.constitution}
+              </span>
+            </div>
+            <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
+              <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">DET</span>
+              <span className={cn("font-bold text-base", getStatusValueColor(category))}>
+                {safeAttributes.willPower}
+              </span>
+            </div>
+            <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
+              <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">PER</span>
+              <span className={cn("font-bold text-base", getStatusValueColor(category))}>
+                {safeAttributes.perception}
+              </span>
+            </div>
+          </div>
+
+          {/* Status - each spans 2 columns (double width) */}
+          <div className="grid grid-cols-6 gap-1">
+            <div className="col-span-2">
+              <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
+                <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">END</span>
+                <span className="font-bold text-base text-muted-foreground">
+                  {safeStatus.endurance}
+                </span>
+              </div>
+            </div>
+            <div className="col-span-2">
+              <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
+                <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">Load</span>
+                <span className="font-bold text-base text-muted-foreground">
+                  {safeStatus.maxLoad}
+                </span>
+              </div>
+            </div>
+            <div className="col-span-2">
+              <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
+                <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">Speed</span>
+                <span className="font-bold text-base text-muted-foreground">
+                  {safeStatus.speed}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       )}
