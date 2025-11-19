@@ -125,14 +125,18 @@ export interface Character {
 
 export interface CharacterCardProps extends VariantProps<typeof characterCardVariants> {
   character: Character
-  variant?: "full" | "compact"
+  variant?: "full" | "compact" | "mini"
+  expandOnHover?: boolean
   className?: string
+  headerAction?: React.ReactNode
 }
 
 export function CharacterCard({
   character,
   variant = "full",
+  expandOnHover = false,
   className,
+  headerAction,
 }: CharacterCardProps) {
   const { name, category, level, race, class: characterClass, age, weight, height, attributes, status, skills, qualities, drawbacks } = character
 
@@ -165,11 +169,88 @@ export function CharacterCard({
     maxLoad: 0,
   }
 
+  const isMini = variant === "mini"
+
+  const compactBody = (
+    <div className="p-2 space-y-1.5 border-t-2 border-border/50">
+      {/* Attributes - 6 columns */}
+      <div className="grid grid-cols-6 gap-1">
+        <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
+          <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">STR</span>
+          <span className={cn("font-bold text-base", getStatusValueColor(category))}>
+            {safeAttributes.strength}
+          </span>
+        </div>
+        <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
+          <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">INT</span>
+          <span className={cn("font-bold text-base", getStatusValueColor(category))}>
+            {safeAttributes.intelligence}
+          </span>
+        </div>
+        <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
+          <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">DEX</span>
+          <span className={cn("font-bold text-base", getStatusValueColor(category))}>
+            {safeAttributes.dexterity}
+          </span>
+        </div>
+        <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
+          <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">CON</span>
+          <span className={cn("font-bold text-base", getStatusValueColor(category))}>
+            {safeAttributes.constitution}
+          </span>
+        </div>
+        <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
+          <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">DET</span>
+          <span className={cn("font-bold text-base", getStatusValueColor(category))}>
+            {safeAttributes.willPower}
+          </span>
+        </div>
+        <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
+          <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">PER</span>
+          <span className={cn("font-bold text-base", getStatusValueColor(category))}>
+            {safeAttributes.perception}
+          </span>
+        </div>
+      </div>
+
+      {/* Status - each spans 2 columns (double width) */}
+      <div className="grid grid-cols-6 gap-1">
+        <div className="col-span-2">
+          <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
+            <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">END</span>
+            <span className="font-bold text-base text-muted-foreground">
+              {safeStatus.endurance}
+            </span>
+          </div>
+        </div>
+        <div className="col-span-2">
+          <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
+            <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">Load</span>
+            <span className="font-bold text-base text-muted-foreground">
+              {safeStatus.maxLoad}
+            </span>
+          </div>
+        </div>
+        <div className="col-span-2">
+          <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
+            <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">Speed</span>
+            <span className="font-bold text-base text-muted-foreground">
+              {safeStatus.speed}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
   return (
-    <div className={cn(
-      characterCardVariants({ category }),
-      className
-    )}>
+    <div
+      className={cn(
+        characterCardVariants({ category }),
+        isMini && expandOnHover && "group",
+        className
+      )}
+    >
       {/* Header Banner */}
       <div className={cn(headerBannerVariants({ category }))}>
         <div className="relative z-10 flex items-center justify-between">
@@ -179,16 +260,23 @@ export function CharacterCard({
               <p className={cn("text-sm", getSubtitleColor(category))}>{subtitle}</p>
             )}
           </div>
-          {variant === "compact" && (
-            <div className="shrink-0 ml-4">
-              <div className={cn("flex flex-col items-center justify-center rounded-xl border p-1 min-w-[44px]", getLifeBoxBg(category))}>
-                <span className="text-muted-foreground uppercase tracking-wide font-bold text-[10px]">Life</span>
-                <span className="font-bold text-lg text-white">
-                  {safeStatus.life}
-                </span>
+          <div className="flex items-center gap-2 shrink-0">
+            {headerAction && (
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                {headerAction}
               </div>
-            </div>
-          )}
+            )}
+            {variant === "compact" && (
+              <div className="ml-4">
+                <div className={cn("flex flex-col items-center justify-center rounded-xl border p-1 min-w-[44px]", getLifeBoxBg(category))}>
+                  <span className="text-muted-foreground uppercase tracking-wide font-bold text-[10px]">Life</span>
+                  <span className="font-bold text-lg text-white">
+                    {safeStatus.life}
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -225,75 +313,12 @@ export function CharacterCard({
       )}
 
       {/* Compact variant: show attributes and status at bottom */}
-      {variant === "compact" && (
-        <div className="p-2 space-y-1.5 border-t-2 border-border/50">
-          {/* Attributes - 6 columns */}
-          <div className="grid grid-cols-6 gap-1">
-            <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
-              <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">STR</span>
-              <span className={cn("font-bold text-base", getStatusValueColor(category))}>
-                {safeAttributes.strength}
-              </span>
-            </div>
-            <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
-              <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">INT</span>
-              <span className={cn("font-bold text-base", getStatusValueColor(category))}>
-                {safeAttributes.intelligence}
-              </span>
-            </div>
-            <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
-              <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">DEX</span>
-              <span className={cn("font-bold text-base", getStatusValueColor(category))}>
-                {safeAttributes.dexterity}
-              </span>
-            </div>
-            <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
-              <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">CON</span>
-              <span className={cn("font-bold text-base", getStatusValueColor(category))}>
-                {safeAttributes.constitution}
-              </span>
-            </div>
-            <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
-              <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">DET</span>
-              <span className={cn("font-bold text-base", getStatusValueColor(category))}>
-                {safeAttributes.willPower}
-              </span>
-            </div>
-            <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
-              <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">PER</span>
-              <span className={cn("font-bold text-base", getStatusValueColor(category))}>
-                {safeAttributes.perception}
-              </span>
-            </div>
-          </div>
+      {variant === "compact" && compactBody}
 
-          {/* Status - each spans 2 columns (double width) */}
-          <div className="grid grid-cols-6 gap-1">
-            <div className="col-span-2">
-              <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
-                <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">END</span>
-                <span className="font-bold text-base text-muted-foreground">
-                  {safeStatus.endurance}
-                </span>
-              </div>
-            </div>
-            <div className="col-span-2">
-              <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
-                <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">Load</span>
-                <span className="font-bold text-base text-muted-foreground">
-                  {safeStatus.maxLoad}
-                </span>
-              </div>
-            </div>
-            <div className="col-span-2">
-              <div className="flex flex-col items-center justify-center rounded-lg border bg-secondary/50 border-border p-0.5 min-w-[36px]">
-                <span className="text-muted-foreground uppercase tracking-wide font-bold text-[9px]">Speed</span>
-                <span className="font-bold text-base text-muted-foreground">
-                  {safeStatus.speed}
-                </span>
-              </div>
-            </div>
-          </div>
+      {/* Mini variant: optionally expand to compact on hover */}
+      {variant === "mini" && expandOnHover && (
+        <div className="max-h-0 overflow-hidden transition-all duration-200 group-hover:max-h-[480px] group-hover:py-2">
+          {compactBody}
         </div>
       )}
     </div>

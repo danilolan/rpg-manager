@@ -33,7 +33,7 @@ export function CombatSetup({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Available Characters */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Available Characters</h3>
@@ -45,7 +45,7 @@ export function CombatSetup({
         </div>
 
         {/* Combat Roster */}
-        <div className="space-y-4">
+        <div className="space-y-4 lg:col-span-2">
           <h3 className="text-lg font-semibold">
             Combat Roster ({combatants.length})
           </h3>
