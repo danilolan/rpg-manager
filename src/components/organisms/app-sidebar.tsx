@@ -1,6 +1,6 @@
 "use client"
 
-import { Home, Users, Settings } from "lucide-react"
+import { Home, Users, Settings, Dice6 } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -23,6 +23,11 @@ const menuItems = [
     title: "Characters",
     url: "/characters",
     icon: Users,
+  },
+  {
+    title: "Randomizer",
+    url: "/randomizer",
+    icon: Dice6,
   },
   {
     title: "Settings",
