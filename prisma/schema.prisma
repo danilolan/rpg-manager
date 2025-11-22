@@ -120,3 +120,47 @@ model Drawback {
   @@map("drawbacks")
 }
 
+model Category {
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  
+  items       RandomItem[]
+  rollHistory RollHistory[]
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  @@map("categories")
+}
+
+model RandomItem {
+  id          String    @id @default(cuid())
+  name        String
+  description String?   // Optional
+  weight      Float?    // Optional - for RPG inventory
+  rarity      String?   // Optional
+  
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  rollHistory RollHistory[]
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@map("random_items")
+}
+
+model RollHistory {
+  id        String      @id @default(cuid())
+  categoryId String
+  category  Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  itemId    String
+  item      RandomItem  @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime    @default(now())
+  
+  @@map("roll_history")
+}
+
