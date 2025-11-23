@@ -36,6 +36,25 @@ export function CombatArena({ combatants, onResetCombat }: CombatArenaProps) {
     }
   }, [currentIndex, turnOrder.length])
 
+  // Skip dead combatants when they become current
+  useEffect(() => {
+    if (turnOrder.length === 0) return
+    
+    if (currentCombatant && isDead(currentCombatant)) {
+      // Find next alive combatant
+      let nextIndex = (currentIndex + 1) % turnOrder.length
+      let attempts = 0
+      
+      while (isDead(turnOrder[nextIndex]) && attempts < turnOrder.length) {
+        nextIndex = (nextIndex + 1) % turnOrder.length
+        attempts++
+      }
+      
+      setCurrentIndex(nextIndex)
+      return
+    }
+  }, [currentIndex, turnOrder, hpMap])
+
   // Scroll current combatant into view and center it ("roulette" effect)
   useEffect(() => {
     const el = itemRefs.current[currentIndex]
@@ -46,7 +65,18 @@ export function CombatArena({ combatants, onResetCombat }: CombatArenaProps) {
 
   const handleNext = () => {
     if (turnOrder.length === 0) return
-    setCurrentIndex((prev) => (prev + 1) % turnOrder.length)
+    
+    // Find next alive combatant, skipping dead ones
+    let nextIndex = (currentIndex + 1) % turnOrder.length
+    let attempts = 0
+    
+    while (isDead(turnOrder[nextIndex]) && attempts < turnOrder.length) {
+      nextIndex = (nextIndex + 1) % turnOrder.length
+      attempts++
+    }
+    
+    // If all are dead, just advance normally
+    setCurrentIndex(nextIndex)
   }
 
   const currentCombatant = turnOrder[currentIndex]
@@ -83,6 +113,10 @@ export function CombatArena({ combatants, onResetCombat }: CombatArenaProps) {
 
   const getMaxHp = (c: CombatantWithInitiative): number => {
     return c.character.status?.life ?? 0
+  }
+
+  const isDead = (c: CombatantWithInitiative): boolean => {
+    return getCurrentHp(c) <= 0
   }
 
   const getDamageAmount = (id: string): number => {
@@ -129,7 +163,7 @@ export function CombatArena({ combatants, onResetCombat }: CombatArenaProps) {
   }
 
   return (
-    <div className="space-y-4 h-full flex flex-col">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Combat Arena</h2>
@@ -143,15 +177,15 @@ export function CombatArena({ combatants, onResetCombat }: CombatArenaProps) {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Turn order vertical list */}
-        <div className="rounded-lg border bg-card p-4 lg:col-span-2 flex flex-col">
-          <div className="mt-2 px-2 py-4">
-            <div className="flex flex-col gap-8">
-              {turnOrder.map((combatant, index) => {
+        <div className="rounded-lg border bg-card p-4 lg:col-span-2">
+          <div className="space-y-4">
+            {turnOrder.map((combatant, index) => {
                 const isCurrent = index === currentIndex
                 const currentHp = getCurrentHp(combatant)
                 const maxHp = getMaxHp(combatant)
+                const dead = isDead(combatant)
                 return (
                   <div
                     key={combatant.instanceId}
@@ -159,10 +193,12 @@ export function CombatArena({ combatants, onResetCombat }: CombatArenaProps) {
                       itemRefs.current[index] = el
                     }}
                     className={cn(
-                      'relative rounded-lg border bg-background/60 p-4 transition shadow-sm',
-                      isCurrent
+                      'relative rounded-lg border p-4 transition shadow-sm',
+                      dead
+                        ? 'border-gray-800 bg-gray-900/80 opacity-60'
+                        : isCurrent
                         ? 'border-primary ring-2 ring-primary/60 bg-background'
-                        : 'border-border opacity-75'
+                        : 'border-border bg-background/60 opacity-75'
                     )}
                   >
                     {/* Position badge */}
@@ -264,13 +300,12 @@ export function CombatArena({ combatants, onResetCombat }: CombatArenaProps) {
                     </div>
                   </div>
                 )
-              })}
-              {turnOrder.length === 0 && (
-                <p className="text-sm text-muted-foreground text-center py-8">
-                  No combatants in this battle.
-                </p>
-              )}
-            </div>
+            })}
+            {turnOrder.length === 0 && (
+              <p className="text-sm text-muted-foreground text-center py-8">
+                No combatants in this battle.
+              </p>
+            )}
           </div>
         </div>
 
@@ -294,10 +329,6 @@ export function CombatArena({ combatants, onResetCombat }: CombatArenaProps) {
                   (Init: {currentCombatant.initiative})
                 </p>
               </div>
-
-              <Button onClick={handleNext} size="lg" className="w-full mt-auto">
-                Pass turn to next combatant
-              </Button>
             </>
           ) : (
             <p className="text-sm text-muted-foreground">
@@ -307,6 +338,15 @@ export function CombatArena({ combatants, onResetCombat }: CombatArenaProps) {
           )}
         </div>
       </div>
+
+      {/* Fixed button at bottom */}
+      {currentCombatant && (
+        <div className="fixed bottom-12 right-8 z-50">
+          <Button onClick={handleNext} size="lg" className="shadow-lg">
+            Pass turn to next combatant
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

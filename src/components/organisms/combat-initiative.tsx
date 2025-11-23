@@ -29,13 +29,6 @@ export function CombatInitiative({
 
   return (
     <div className="space-y-4">
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight">Initiative Phase</h2>
-        <p className="text-muted-foreground">
-          Roll for initiative and enter the values for each combatant
-        </p>
-      </div>
-
       <div className="space-y-6">
         <div className="rounded-lg border bg-card p-6">
         <h3 className="text-lg font-semibold mb-4">Set Initiative</h3>
