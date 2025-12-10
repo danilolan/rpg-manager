@@ -164,3 +164,15 @@ model RollHistory {
   @@map("roll_history")
 }
 
+model YoutubeVideo {
+  id          String   @id @default(cuid())
+  name        String
+  category    String
+  youtubeLink String
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("youtube_videos")
+}
+
