@@ -263,7 +263,9 @@ export function CharacterCard({
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {headerAction && (
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className={cn(
+                isMini && expandOnHover && "opacity-0 group-hover:opacity-100 transition-opacity"
+              )}>
                 {headerAction}
               </div>
             )}

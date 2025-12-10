@@ -1,85 +1,31 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { CharacterCard } from '@/components/organisms/character-card'
-import type { CombatantWithInitiative } from '@/components/organisms/combat-initiative'
+import type { Combatant } from '@/app/combat/page'
 import { NumberInput } from '@/components/atoms/number-input'
 import { cn } from '@/lib/utils'
 
-// Centralized method to compute turn order
-export function getTurnOrder(
-  combatants: CombatantWithInitiative[]
-): CombatantWithInitiative[] {
-  return [...combatants].sort(
-    (a, b) => (b.initiative || 0) - (a.initiative || 0)
-  )
-}
-
 interface CombatArenaProps {
-  combatants: CombatantWithInitiative[]
+  combatants: Combatant[]
   onResetCombat: () => void
 }
 
 export function CombatArena({ combatants, onResetCombat }: CombatArenaProps) {
-  const turnOrder = useMemo(() => getTurnOrder(combatants), [combatants])
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const itemRefs = useRef<(HTMLDivElement | null)[]>([])
   const [hpMap, setHpMap] = useState<Record<string, number>>({})
   const [damageMap, setDamageMap] = useState<Record<string, number>>({})
   const [healMap, setHealMap] = useState<Record<string, number>>({})
 
-  // Ensure current index stays in range when combatants change
-  useEffect(() => {
-    if (currentIndex >= turnOrder.length) {
-      setCurrentIndex(0)
-    }
-  }, [currentIndex, turnOrder.length])
-
-  // Skip dead combatants when they become current
-  useEffect(() => {
-    if (turnOrder.length === 0) return
-    
-    if (currentCombatant && isDead(currentCombatant)) {
-      // Find next alive combatant
-      let nextIndex = (currentIndex + 1) % turnOrder.length
-      let attempts = 0
-      
-      while (isDead(turnOrder[nextIndex]) && attempts < turnOrder.length) {
-        nextIndex = (nextIndex + 1) % turnOrder.length
-        attempts++
-      }
-      
-      setCurrentIndex(nextIndex)
-      return
-    }
-  }, [currentIndex, turnOrder, hpMap])
-
-  // Scroll current combatant into view and center it ("roulette" effect)
-  useEffect(() => {
-    const el = itemRefs.current[currentIndex]
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    }
-  }, [currentIndex, turnOrder.length])
-
-  const handleNext = () => {
-    if (turnOrder.length === 0) return
-    
-    // Find next alive combatant, skipping dead ones
-    let nextIndex = (currentIndex + 1) % turnOrder.length
-    let attempts = 0
-    
-    while (isDead(turnOrder[nextIndex]) && attempts < turnOrder.length) {
-      nextIndex = (nextIndex + 1) % turnOrder.length
-      attempts++
-    }
-    
-    // If all are dead, just advance normally
-    setCurrentIndex(nextIndex)
-  }
-
-  const currentCombatant = turnOrder[currentIndex]
+  // Split combatants into allies and enemies based on category
+  const allies = combatants.filter((c) => 
+    c.character.category === 'PLAYER' || c.character.category === 'ALLY'
+  )
+  const enemies = combatants.filter((c) => 
+    c.character.category === 'MONSTER' || 
+    c.character.category === 'ZOMBIE' || 
+    c.character.category === 'NPC'
+  )
 
   // Initialize / sync HP map when combatants change
   useEffect(() => {
@@ -87,7 +33,7 @@ export function CombatArena({ combatants, onResetCombat }: CombatArenaProps) {
       const next: Record<string, number> = { ...prev }
 
       // Add or keep current entries
-      for (const c of turnOrder) {
+      for (const c of combatants) {
         if (next[c.instanceId] == null) {
           const baseHp = c.character.status?.life ?? 0
           next[c.instanceId] = baseHp
@@ -96,26 +42,26 @@ export function CombatArena({ combatants, onResetCombat }: CombatArenaProps) {
 
       // Remove entries for combatants that no longer exist
       Object.keys(next).forEach((id) => {
-        if (!turnOrder.some((c) => c.instanceId === id)) {
+        if (!combatants.some((c) => c.instanceId === id)) {
           delete next[id]
         }
       })
 
       return next
     })
-  }, [turnOrder])
+  }, [combatants])
 
-  const getCurrentHp = (c: CombatantWithInitiative): number => {
+  const getCurrentHp = (c: Combatant): number => {
     const base = c.character.status?.life ?? 0
     const stored = hpMap[c.instanceId]
     return stored !== undefined ? stored : base
   }
 
-  const getMaxHp = (c: CombatantWithInitiative): number => {
+  const getMaxHp = (c: Combatant): number => {
     return c.character.status?.life ?? 0
   }
 
-  const isDead = (c: CombatantWithInitiative): boolean => {
+  const isDead = (c: Combatant): boolean => {
     return getCurrentHp(c) <= 0
   }
 
@@ -135,7 +81,7 @@ export function CombatArena({ combatants, onResetCombat }: CombatArenaProps) {
     setHealMap((prev) => ({ ...prev, [id]: value }))
   }
 
-  const applyDamageTo = (c: CombatantWithInitiative) => {
+  const applyDamageTo = (c: Combatant) => {
     const id = c.instanceId
     const amount = getDamageAmount(id)
     if (amount <= 0) return
@@ -147,7 +93,7 @@ export function CombatArena({ combatants, onResetCombat }: CombatArenaProps) {
     })
   }
 
-  const applyHealTo = (c: CombatantWithInitiative) => {
+  const applyHealTo = (c: Combatant) => {
     const id = c.instanceId
     const amount = getHealAmount(id)
     if (amount <= 0) return
@@ -162,13 +108,124 @@ export function CombatArena({ combatants, onResetCombat }: CombatArenaProps) {
     })
   }
 
+  const renderCombatantCard = (combatant: Combatant, index: number) => {
+    const currentHp = getCurrentHp(combatant)
+    const maxHp = getMaxHp(combatant)
+    const dead = isDead(combatant)
+
+    return (
+      <div
+        key={combatant.instanceId}
+        className={cn(
+          'relative rounded-lg border p-4 transition shadow-sm',
+          dead
+            ? 'border-gray-800 bg-gray-900/80 opacity-60'
+            : 'border-border bg-background/60'
+        )}
+      >
+        {/* Number badge */}
+        <div className="absolute -left-3 top-3 z-20 bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shadow">
+          {index + 1}
+        </div>
+
+        <div>
+          <div className="grid grid-cols-[max-content_1fr] gap-4 items-start">
+            <div className="min-w-0">
+              <CharacterCard
+                character={combatant.character}
+                variant="full"
+              />
+            </div>
+
+            {/* Per-character HP and controls */}
+            <div className="w-full h-full rounded-md border bg-background/60 p-4">
+              <div className="grid grid-cols-2 gap-4">
+                {/* Left: HP Values */}
+                <div className="flex flex-col gap-8">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase">
+                    Current HP
+                  </p>
+                  <div className="text-3xl font-bold">
+                    {currentHp}
+                    {maxHp && (
+                      <span className="text-xl text-muted-foreground">
+                        {' '}
+                        / {maxHp}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Right: Manipulation buttons */}
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <p className="text-xs font-semibold text-muted-foreground">
+                      Inflict damage
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => applyDamageTo(combatant)}
+                        className="w-20"
+                      >
+                        Damage
+                      </Button>
+                      <NumberInput
+                        value={getDamageAmount(combatant.instanceId)}
+                        onChange={(val) =>
+                          setDamageFor(combatant.instanceId, val)
+                        }
+                        min={0}
+                        max={999}
+                        step={1}
+                        placeholder="0"
+                        className="w-auto"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <p className="text-xs font-semibold text-muted-foreground">
+                      Heal
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => applyHealTo(combatant)}
+                        className="w-20 bg-green-600 hover:bg-green-700 text-white"
+                      >
+                        Heal
+                      </Button>
+                      <NumberInput
+                        value={getHealAmount(combatant.instanceId)}
+                        onChange={(val) =>
+                          setHealFor(combatant.instanceId, val)
+                        }
+                        min={0}
+                        max={999}
+                        step={1}
+                        placeholder="0"
+                        className="w-auto"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Combat Arena</h2>
           <p className="text-muted-foreground">
-            {turnOrder.length} combatant{turnOrder.length !== 1 ? 's' : ''} in
+            {combatants.length} combatant{combatants.length !== 1 ? 's' : ''} in
             battle
           </p>
         </div>
@@ -177,177 +234,37 @@ export function CombatArena({ combatants, onResetCombat }: CombatArenaProps) {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Turn order vertical list */}
-        <div className="rounded-lg border bg-card p-4 lg:col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Allies Column */}
+        <div className="rounded-lg border bg-card p-4">
+          <h3 className="text-lg font-semibold mb-4 text-green-600">
+            Allies ({allies.length})
+          </h3>
           <div className="space-y-4">
-            {turnOrder.map((combatant, index) => {
-                const isCurrent = index === currentIndex
-                const currentHp = getCurrentHp(combatant)
-                const maxHp = getMaxHp(combatant)
-                const dead = isDead(combatant)
-                return (
-                  <div
-                    key={combatant.instanceId}
-                    ref={(el) => {
-                      itemRefs.current[index] = el
-                    }}
-                    className={cn(
-                      'relative rounded-lg border p-4 transition shadow-sm',
-                      dead
-                        ? 'border-gray-800 bg-gray-900/80 opacity-60'
-                        : isCurrent
-                        ? 'border-primary ring-2 ring-primary/60 bg-background'
-                        : 'border-border bg-background/60 opacity-75'
-                    )}
-                  >
-                    {/* Position badge */}
-                    <div className="absolute -left-3 top-0 -translate-y-1/2 z-20 bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shadow">
-                      {index + 1}
-                    </div>
-
-                    {/* Initiative pill */}
-                    <div className="absolute top-2 right-2 z-10 bg-blue-600 text-white rounded-full px-2 py-1 text-xs font-bold shadow">
-                      Init: {combatant.initiative}
-                    </div>
-
-                    <div>
-                      <div className="grid grid-cols-[max-content_1fr] gap-4 items-start">
-                        <div className="min-w-0">
-                          <CharacterCard
-                            character={combatant.character}
-                            variant="full"
-                          />
-                        </div>
-
-                        {/* Per-character HP and controls */}
-                        <div className="w-full h-full rounded-md border bg-background/60 p-4">
-                          <div className="grid grid-cols-2 gap-4">
-                            {/* Left: HP Values */}
-                            <div className="flex flex-col gap-8">
-                              <p className="text-xs font-semibold text-muted-foreground uppercase">
-                                Current HP
-                              </p>
-                              <div className="text-3xl font-bold">
-                                {currentHp}
-                                {maxHp && (
-                                  <span className="text-xl text-muted-foreground">
-                                    {' '}
-                                    / {maxHp}
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Right: Manipulation buttons */}
-                            <div className="space-y-3">
-                              <div className="space-y-1">
-                                <p className="text-xs font-semibold text-muted-foreground">
-                                  Inflict damage
-                                </p>
-                                <div className="flex items-center gap-2">
-                                  <Button
-                                    variant="destructive"
-                                    size="sm"
-                                    onClick={() => applyDamageTo(combatant)}
-                                    className="w-20"
-                                  >
-                                    Damage
-                                  </Button>
-                                  <NumberInput
-                                    value={getDamageAmount(combatant.instanceId)}
-                                    onChange={(val) =>
-                                      setDamageFor(combatant.instanceId, val)
-                                    }
-                                    min={0}
-                                    max={999}
-                                    step={1}
-                                    placeholder="0"
-                                    className="w-auto"
-                                  />
-                                </div>
-                              </div>
-
-                              <div className="space-y-1">
-                                <p className="text-xs font-semibold text-muted-foreground">
-                                  Heal
-                                </p>
-                                <div className="flex items-center gap-2">
-                                  <Button
-                                    size="sm"
-                                    onClick={() => applyHealTo(combatant)}
-                                    className="w-20 bg-green-600 hover:bg-green-700 text-white"
-                                  >
-                                    Heal
-                                  </Button>
-                                  <NumberInput
-                                    value={getHealAmount(combatant.instanceId)}
-                                    onChange={(val) =>
-                                      setHealFor(combatant.instanceId, val)
-                                    }
-                                    min={0}
-                                    max={999}
-                                    step={1}
-                                    placeholder="0"
-                                    className="w-auto"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )
-            })}
-            {turnOrder.length === 0 && (
+            {allies.map((combatant, index) => renderCombatantCard(combatant, index))}
+            {allies.length === 0 && (
               <p className="text-sm text-muted-foreground text-center py-8">
-                No combatants in this battle.
+                No allies in this battle.
               </p>
             )}
           </div>
         </div>
 
-        {/* Workspace / controls */}
-        <div className="rounded-lg border bg-card p-4 flex flex-col gap-6">
-          <div>
-            <h3 className="text-lg font-semibold">Combat Workspace</h3>
-            <p className="text-xs text-muted-foreground">
-              Use this panel to control the flow of combat.
-            </p>
+        {/* Enemies Column */}
+        <div className="rounded-lg border bg-card p-4">
+          <h3 className="text-lg font-semibold mb-4 text-red-600">
+            Enemies ({enemies.length})
+          </h3>
+          <div className="space-y-4">
+            {enemies.map((combatant, index) => renderCombatantCard(combatant, index))}
+            {enemies.length === 0 && (
+              <p className="text-sm text-muted-foreground text-center py-8">
+                No enemies in this battle.
+              </p>
+            )}
           </div>
-
-          {currentCombatant ? (
-            <>
-              <div className="text-sm space-y-1">
-                <p className="font-semibold">Current combatant</p>
-                <p className="text-muted-foreground">
-                  <span className="font-medium">
-                    #{currentIndex + 1} — {currentCombatant.character.name}
-                  </span>{' '}
-                  (Init: {currentCombatant.initiative})
-                </p>
-              </div>
-            </>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              No active combatant. Add characters and start combat from the
-              setup screen.
-            </p>
-          )}
         </div>
       </div>
-
-      {/* Fixed button at bottom */}
-      {currentCombatant && (
-        <div className="fixed bottom-12 right-8 z-50">
-          <Button onClick={handleNext} size="lg" className="shadow-lg">
-            Pass turn to next combatant
-          </Button>
-        </div>
-      )}
     </div>
   )
 }
-

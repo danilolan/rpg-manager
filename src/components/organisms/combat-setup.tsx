@@ -5,15 +5,15 @@ import { Swords } from 'lucide-react'
 import { CombatCharacterSelection } from '@/components/organisms/combat-character-selection'
 import { CombatRoster } from '@/components/organisms/combat-roster'
 import type { Character } from '@/components/organisms/character-card'
-import type { CombatantWithInitiative } from '@/components/organisms/combat-initiative'
+import type { Combatant } from '@/app/combat/page'
 
 interface CombatSetupProps {
   characters: Character[]
-  combatants: CombatantWithInitiative[]
+  combatants: Combatant[]
   isLoading: boolean
   onAddCharacter: (character: Character) => void
   onRemoveCharacter: (instanceId: string) => void
-  onProceedToInitiative: () => void
+  onStartCombat: () => void
 }
 
 export function CombatSetup({
@@ -22,7 +22,7 @@ export function CombatSetup({
   isLoading,
   onAddCharacter,
   onRemoveCharacter,
-  onProceedToInitiative,
+  onStartCombat,
 }: CombatSetupProps) {
   return (
     <div className="space-y-4">
@@ -56,13 +56,13 @@ export function CombatSetup({
           {combatants.length > 0 && (
             <div className="sticky bottom-0 pt-4">
               <Button
-                onClick={onProceedToInitiative}
+                onClick={onStartCombat}
                 disabled={combatants.length < 2}
                 size="lg"
                 className="w-full"
               >
                 <Swords />
-                Set Initiative ({combatants.length} combatants)
+                Start Combat ({combatants.length} combatants)
               </Button>
               {combatants.length < 2 && (
                 <p className="text-sm text-muted-foreground text-center mt-2">

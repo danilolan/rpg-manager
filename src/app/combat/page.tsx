@@ -2,15 +2,19 @@
 
 import { useState, useEffect } from 'react'
 import { CombatSetup } from '@/components/organisms/combat-setup'
-import { CombatInitiative, type CombatantWithInitiative } from '@/components/organisms/combat-initiative'
-import { CombatArena, getTurnOrder } from '@/components/organisms/combat-arena'
+import { CombatArena } from '@/components/organisms/combat-arena'
 import type { Character } from '@/components/organisms/character-card'
 
-type CombatStep = 'setup' | 'initiative' | 'combat'
+export interface Combatant {
+  instanceId: string
+  character: Character
+}
+
+type CombatStep = 'setup' | 'combat'
 
 export default function CombatPage() {
   const [characters, setCharacters] = useState<Character[]>([])
-  const [combatants, setCombatants] = useState<CombatantWithInitiative[]>([])
+  const [combatants, setCombatants] = useState<Combatant[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [currentStep, setCurrentStep] = useState<CombatStep>('setup')
 
@@ -32,10 +36,9 @@ export default function CombatPage() {
   }
 
   const addToCombat = (character: Character) => {
-    const newCombatant: CombatantWithInitiative = {
+    const newCombatant: Combatant = {
       instanceId: `${character.id}-${Date.now()}-${Math.random()}`,
       character,
-      initiative: null,
     }
     setCombatants([...combatants, newCombatant])
   }
@@ -44,43 +47,17 @@ export default function CombatPage() {
     setCombatants(combatants.filter((c) => c.instanceId !== instanceId))
   }
 
-  const updateInitiative = (instanceId: string, initiative: number) => {
-    setCombatants(
-      combatants.map((c) =>
-        c.instanceId === instanceId ? { ...c, initiative } : c
-      )
-    )
-  }
-
-  const proceedToInitiative = () => {
+  const startCombat = () => {
     if (combatants.length < 2) {
       alert('Add at least 2 combatants to continue')
       return
     }
-    setCurrentStep('initiative')
-  }
-
-  const startCombat = () => {
-    // Centralized sort by initiative (highest first)
-    const sorted = getTurnOrder(combatants)
-    setCombatants(sorted)
     setCurrentStep('combat')
   }
 
   const resetCombat = () => {
     setCurrentStep('setup')
     setCombatants([])
-  }
-
-  if (currentStep === 'initiative') {
-    return (
-      <CombatInitiative
-        combatants={combatants}
-        onUpdateInitiative={updateInitiative}
-        onContinue={startCombat}
-        onBack={() => setCurrentStep('setup')}
-      />
-    )
   }
 
   if (currentStep === 'combat') {
@@ -99,7 +76,7 @@ export default function CombatPage() {
       isLoading={isLoading}
       onAddCharacter={addToCombat}
       onRemoveCharacter={removeFromCombat}
-      onProceedToInitiative={proceedToInitiative}
+      onStartCombat={startCombat}
     />
   )
 }
