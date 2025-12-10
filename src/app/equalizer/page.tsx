@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useYoutubeVideos, type YoutubeVideo } from '@/hooks/use-youtube-videos'
 import { useEqualizerSlots } from '@/hooks/use-equalizer-slots'
 import { EqualizerSlots } from '@/components/organisms/equalizer-slots'
@@ -17,6 +17,8 @@ export default function EqualizerPage() {
 
   const {
     slots,
+    masterVolume,
+    setMasterVolume,
     addVideoToSlot,
     removeVideoFromSlot,
     updateSlotVolume,
@@ -27,6 +29,25 @@ export default function EqualizerPage() {
 
   const [form, setForm] = useState({ name: '', category: '', youtubeLink: '' })
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [isClient, setIsClient] = useState(false)
+
+  // Ensure client-side only
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  // Load YouTube IFrame API (client-side only)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    
+    if (!document.getElementById('youtube-iframe-api')) {
+      const tag = document.createElement('script')
+      tag.id = 'youtube-iframe-api'
+      tag.src = 'https://www.youtube.com/iframe_api'
+      const firstScriptTag = document.getElementsByTagName('script')[0]
+      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag)
+    }
+  }, [])
 
   const handleFormChange = (field: string, value: string) => {
     setForm(prev => ({ ...prev, [field]: value }))
@@ -92,6 +113,22 @@ export default function EqualizerPage() {
     addVideoToSlot(emptySlot.id, video)
   }
 
+  if (!isClient) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">YouTube Equalizer</h2>
+          <p className="text-muted-foreground">
+            Reproduza até 8 vídeos simultaneamente com controle de volume individual
+          </p>
+        </div>
+        <div className="flex items-center justify-center p-12">
+          <p className="text-muted-foreground">Carregando...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -103,8 +140,10 @@ export default function EqualizerPage() {
 
       <EqualizerSlots
         slots={slots}
+        masterVolume={masterVolume}
         onRemoveVideo={removeVideoFromSlot}
         onVolumeChange={updateSlotVolume}
+        onMasterVolumeChange={setMasterVolume}
       />
 
       <VideoGallery

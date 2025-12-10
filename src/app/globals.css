@@ -114,3 +114,42 @@ body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
 }
+
+/* Vertical slider styles */
+.vertical-slider {
+  appearance: none;
+  -webkit-appearance: slider-vertical;
+  background: transparent;
+  outline: none;
+}
+
+.vertical-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: hsl(var(--primary));
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+}
+
+.vertical-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: hsl(var(--primary));
+  cursor: pointer;
+  border: none;
+  position: relative;
+  z-index: 10;
+}
+
+.vertical-slider::-webkit-slider-thumb:hover {
+  background: hsl(var(--primary) / 0.8);
+}
+
+.vertical-slider::-moz-range-thumb:hover {
+  background: hsl(var(--primary) / 0.8);
+}

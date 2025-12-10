@@ -12,9 +12,10 @@ export function useEqualizerSlots(slotCount = 8) {
     Array.from({ length: slotCount }, (_, i) => ({
       id: i,
       video: null,
-      volume: 100,
+      volume: 0,
     }))
   )
+  const [masterVolume, setMasterVolume] = useState(10) // Default to 10% for safer starting point
 
   const addVideoToSlot = (slotId: number, video: YoutubeVideo) => {
     setSlots(prevSlots =>
@@ -27,7 +28,7 @@ export function useEqualizerSlots(slotCount = 8) {
   const removeVideoFromSlot = (slotId: number) => {
     setSlots(prevSlots =>
       prevSlots.map(slot =>
-        slot.id === slotId ? { ...slot, video: null, volume: 100 } : slot
+        slot.id === slotId ? { ...slot, video: null, volume: 0 } : slot
       )
     )
   }
@@ -43,7 +44,7 @@ export function useEqualizerSlots(slotCount = 8) {
   const removeVideoById = (videoId: string) => {
     setSlots(prevSlots =>
       prevSlots.map(slot =>
-        slot.video?.id === videoId ? { ...slot, video: null, volume: 100 } : slot
+        slot.video?.id === videoId ? { ...slot, video: null, volume: 0 } : slot
       )
     )
   }
@@ -58,6 +59,8 @@ export function useEqualizerSlots(slotCount = 8) {
 
   return {
     slots,
+    masterVolume,
+    setMasterVolume,
     addVideoToSlot,
     removeVideoFromSlot,
     updateSlotVolume,

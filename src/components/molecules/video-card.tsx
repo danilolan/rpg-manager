@@ -20,8 +20,8 @@ export function VideoCard({ video, isInSlot, onAddToSlot, onEdit, onDelete }: Vi
       }`}
       onClick={onAddToSlot}
     >
-      <CardContent className="p-3">
-        <div className="space-y-2">
+      <CardContent className="p-2">
+        <div className="space-y-1.5">
           <div className="aspect-video bg-muted rounded overflow-hidden">
             <img
               src={getYoutubeThumbnailUrl(video.youtubeLink)}
@@ -30,43 +30,45 @@ export function VideoCard({ video, isInSlot, onAddToSlot, onEdit, onDelete }: Vi
             />
           </div>
           <div>
-            <p className="font-medium text-sm truncate">{video.name}</p>
-            <div className="flex items-center gap-2 mt-1">
+            <p className="font-medium text-xs truncate" title={video.name}>
+              {video.name}
+            </p>
+            <div className="flex items-center gap-1 mt-1">
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7"
+                className="h-6 w-6"
                 onClick={(e) => {
                   e.stopPropagation()
                   window.open(video.youtubeLink, '_blank')
                 }}
                 title="Abrir no YouTube"
               >
-                <ExternalLink className="h-3 w-3" />
+                <ExternalLink className="h-2.5 w-2.5" />
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7"
+                className="h-6 w-6"
                 onClick={(e) => {
                   e.stopPropagation()
                   onEdit()
                 }}
                 title="Editar"
               >
-                <Edit className="h-3 w-3" />
+                <Edit className="h-2.5 w-2.5" />
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7"
+                className="h-6 w-6"
                 onClick={(e) => {
                   e.stopPropagation()
                   onDelete()
                 }}
                 title="Excluir"
               >
-                <Trash2 className="h-3 w-3" />
+                <Trash2 className="h-2.5 w-2.5" />
               </Button>
             </div>
           </div>
