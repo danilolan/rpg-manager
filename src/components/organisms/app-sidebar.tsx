@@ -1,6 +1,6 @@
 "use client"
 
-import { Home, Users, Settings, Swords, Dice6, Youtube } from "lucide-react"
+import { Home, Users, Settings, Swords, Dice6, Youtube, BookOpen } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -38,6 +38,11 @@ const menuItems = [
     title: "YouTube Equalizer",
     url: "/equalizer",
     icon: Youtube,
+  },
+  {
+    title: "Resources",
+    url: "/resources",
+    icon: BookOpen,
   },
   {
     title: "Settings",
