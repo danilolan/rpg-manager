@@ -1,4 +1,6 @@
-import { PrismaClient, CharacterCategory } from '@prisma/client'
+import { PrismaClient, CharacterCategory, SkillType } from '@prisma/client'
+import * as fs from 'fs'
+import * as path from 'path'
 
 const prisma = new PrismaClient()
 
@@ -25,14 +27,61 @@ function randomInt(min: number, max: number): number {
 async function main() {
   console.log('🌱 Starting database seed...')
 
-  // Clear existing data (optional - comment out if you want to keep existing data)
-  await prisma.drawback.deleteMany()
-  await prisma.quality.deleteMany()
-  await prisma.skill.deleteMany()
+  // Clear existing resource data
+  await prisma.resourceQualityDrawback.deleteMany()
+  await prisma.resourceSkill.deleteMany()
+  console.log('🗑️  Cleared existing resource data')
+
+  // Clear existing character data (optional - comment out if you want to keep existing data)
+  await prisma.characterQualityDrawback.deleteMany()
+  await prisma.characterSkill.deleteMany()
   await prisma.status.deleteMany()
   await prisma.attributes.deleteMany()
   await prisma.character.deleteMany()
-  console.log('🗑️  Cleared existing data')
+  console.log('🗑️  Cleared existing character data')
+
+  // Load resources from JSON file
+  const resourcesPath = path.join(__dirname, 'data', 'resources.json')
+  const resourcesData = JSON.parse(fs.readFileSync(resourcesPath, 'utf-8'))
+
+  // Seed Skills
+  console.log('📚 Seeding skills...')
+  let skillsCount = 0
+  for (const skill of resourcesData.resourceSkills) {
+    // Map "TYPE" to "REGULAR" since our enum only has REGULAR and SPECIAL
+    const skillType = skill.type === 'TYPE' ? 'REGULAR' : (skill.type as SkillType)
+    
+    await prisma.resourceSkill.create({
+      data: {
+        name: skill.name,
+        description: skill.description || null,
+        type: skillType,
+        page: skill.page || null,
+      },
+    })
+    skillsCount++
+  }
+  console.log(`✅ Created ${skillsCount} skills`)
+
+  // Seed Qualities and Drawbacks
+  console.log('📚 Seeding qualities and drawbacks...')
+  let qualitiesDrawbacksCount = 0
+  for (const item of resourcesData.resourceQualitiesDrawbacks) {
+    await prisma.resourceQualityDrawback.create({
+      data: {
+        name: item.name,
+        description: item.description || null,
+        cost: item.cost,
+        page: item.page || null,
+      },
+    })
+    qualitiesDrawbacksCount++
+  }
+  console.log(`✅ Created ${qualitiesDrawbacksCount} qualities/drawbacks`)
+
+  // Get some resource skills and qualities/drawbacks to assign to characters
+  const allSkills = await prisma.resourceSkill.findMany({ take: 10 })
+  const allQualitiesDrawbacks = await prisma.resourceQualityDrawback.findMany({ take: 10 })
 
   // Create 5 characters
   for (let i = 0; i < characterNames.length; i++) {
@@ -61,45 +110,32 @@ async function main() {
             maxLoad: randomInt(30, 80),
           },
         },
-        skills: {
-          create: [
-            {
-              name: 'Swordsmanship',
-              level: randomInt(1, 10),
-              description: 'Mastery of bladed weapons',
-            },
-            {
-              name: 'Stealth',
-              level: randomInt(1, 10),
-              description: 'Moving without being detected',
-            },
-          ],
+        characterSkills: {
+          create: allSkills.slice(0, 2).map(skill => ({
+            resourceSkillId: skill.id,
+            level: randomInt(1, 10),
+          })),
         },
-        qualities: {
-          create: [
-            {
-              name: 'Quick Reflexes',
-              level: randomInt(1, 5),
-              description: 'React faster in combat situations',
-            },
-          ],
-        },
-        drawbacks: {
-          create: [
-            {
-              name: 'Fear of Heights',
-              level: randomInt(1, 3),
-              description: 'Uncomfortable in high places',
-            },
-          ],
+        characterQualitiesDrawbacks: {
+          create: allQualitiesDrawbacks.slice(0, 2).map(item => ({
+            resourceQualityDrawbackId: item.id,
+            level: randomInt(1, 5),
+          })),
         },
       },
       include: {
         attributes: true,
         status: true,
-        skills: true,
-        qualities: true,
-        drawbacks: true,
+        characterSkills: {
+          include: {
+            resourceSkill: true,
+          },
+        },
+        characterQualitiesDrawbacks: {
+          include: {
+            resourceQualityDrawback: true,
+          },
+        },
       },
     })
 

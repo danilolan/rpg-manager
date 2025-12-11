@@ -16,9 +16,16 @@ export async function GET(
       include: {
         attributes: true,
         status: true,
-        skills: true,
-        qualities: true,
-        drawbacks: true,
+        characterSkills: {
+          include: {
+            resourceSkill: true,
+          },
+        },
+        characterQualitiesDrawbacks: {
+          include: {
+            resourceQualityDrawback: true,
+          },
+        },
       },
     })
 
@@ -77,9 +84,16 @@ export async function PATCH(
       include: {
         attributes: true,
         status: true,
-        skills: true,
-        qualities: true,
-        drawbacks: true,
+        characterSkills: {
+          include: {
+            resourceSkill: true,
+          },
+        },
+        characterQualitiesDrawbacks: {
+          include: {
+            resourceQualityDrawback: true,
+          },
+        },
       },
     })
 

@@ -18,6 +18,11 @@ enum CharacterCategory {
   ALLY
 }
 
+enum SkillType {
+  REGULAR
+  SPECIAL
+}
+
 model Character {
   id         String            @id @default(cuid())
   name       String
@@ -30,10 +35,9 @@ model Character {
   attributes Attributes?
   status     Status?
   
-  // One-to-many relations
-  skills     Skill[]
-  qualities  Quality[]
-  drawbacks  Drawback[]
+  // Many-to-many relations with resources
+  characterSkills            CharacterSkill[]
+  characterQualitiesDrawbacks CharacterQualityDrawback[]
   
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -75,49 +79,36 @@ model Status {
   @@map("status")
 }
 
-model Skill {
+model CharacterSkill {
   id          String    @id @default(cuid())
-  name        String
-  level       Int       @default(0)
-  description String?
-  
   characterId String
+  resourceSkillId String
+  level       Int       @default(0)
+  
   character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  resourceSkill ResourceSkill @relation(fields: [resourceSkillId], references: [id], onDelete: Cascade)
   
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   
-  @@map("skills")
+  @@unique([characterId, resourceSkillId])
+  @@map("character_skills")
 }
 
-model Quality {
+model CharacterQualityDrawback {
   id          String    @id @default(cuid())
-  name        String
-  level       Int       @default(0)
-  description String?
-  
   characterId String
+  resourceQualityDrawbackId String
+  level       Int       @default(0)
+  
   character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  resourceQualityDrawback ResourceQualityDrawback @relation(fields: [resourceQualityDrawbackId], references: [id], onDelete: Cascade)
   
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   
-  @@map("qualities")
-}
-
-model Drawback {
-  id          String    @id @default(cuid())
-  name        String
-  level       Int       @default(0)
-  description String?
-  
-  characterId String
-  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
-  
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  
-  @@map("drawbacks")
+  @@unique([characterId, resourceQualityDrawbackId])
+  @@map("character_qualities_drawbacks")
 }
 
 model Category {
@@ -174,5 +165,35 @@ model YoutubeVideo {
   updatedAt   DateTime @updatedAt
   
   @@map("youtube_videos")
+}
+
+model ResourceSkill {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  type        SkillType @default(REGULAR)
+  page        Int?
+  
+  characterSkills CharacterSkill[]
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@map("resource_skills")
+}
+
+model ResourceQualityDrawback {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  cost        Int      // Positive = Quality, Negative = Drawback
+  page        Int?
+  
+  characterQualitiesDrawbacks CharacterQualityDrawback[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("resource_qualities_drawbacks")
 }
 

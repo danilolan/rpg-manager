@@ -1,0 +1,642 @@
+{
+  "resourceQualitiesDrawbacks": [
+    {
+      "name": "Sentidos Aguçados",
+      "description": "Qualidade Física. Comprada separadamente para cada sentido (visão, audição, etc.). Concede +3 em testes de Percepção que usem o sentido escolhido.",
+      "cost": 2,
+      "page": 37
+    },
+    {
+      "name": "Sentidos Prejudicados",
+      "description": "Desvantagem Física. Comprada por sentido. Impõe -3 em testes de Percepção com o sentido afetado. Se corrigido (ex: óculos), o custo cai para -1.",
+      "cost": -2,
+      "page": 37
+    },
+    {
+      "name": "Vício",
+      "description": "Desvantagem Mental. Vício em substância. Penalidade em ações mentais igual ao valor da desvantagem se não saciado. Drogas pesadas dão -3 extra em ações físicas. Resistir exige testes de Vontade acumulativos.",
+      "cost": -1,
+      "page": 37
+    },
+    {
+      "name": "Adversário",
+      "description": "Desvantagem Social. Inimigo ou organização que deseja destruir o personagem. Valor varia de indivíduo (-1) a grandes organizações como a CIA (-5).",
+      "cost": -1,
+      "page": 38
+    },
+    {
+      "name": "Talento Artístico",
+      "description": "Qualidade Mental. Talento natural para uma forma de arte. +3 em tarefas relacionadas. Garante no mínimo 1 Nível de Sucesso mesmo em falhas. Adiciona +12 pontos de Essência.",
+      "cost": 3,
+      "page": 38
+    },
+    {
+      "name": "Atratividade (Qualidade)",
+      "description": "Qualidade Física. Aparência acima da média (+1 a +5). Adiciona o valor em testes para causar boa impressão.",
+      "cost": 1,
+      "page": 40
+    },
+    {
+      "name": "Atratividade (Desvantagem)",
+      "description": "Desvantagem Física. Aparência ruim (-1 a -5). Subtrai o valor em interações sociais positivas, mas adiciona o valor (como bônus) em testes de Intimidação.",
+      "cost": -1,
+      "page": 40
+    },
+    {
+      "name": "Carisma (Qualidade)",
+      "description": "Qualidade Mental. Magnetismo pessoal e liderança. Adiciona o nível da qualidade em tarefas para influenciar pessoas.",
+      "cost": 1,
+      "page": 40
+    },
+    {
+      "name": "Carisma (Desvantagem)",
+      "description": "Desvantagem Mental. Falta de magnetismo, instintivamente não quisto pelos outros. Reduz chances de influenciar pessoas.",
+      "cost": -1,
+      "page": 40
+    },
+    {
+      "name": "Palhaço",
+      "description": "Desvantagem Mental. Compulsão por fazer piadas, mesmo em momentos de perigo. O personagem não é levado a sério e irrita outros em situações tensas.",
+      "cost": -1,
+      "page": 40
+    },
+    {
+      "name": "Contatos",
+      "description": "Qualidade Social. Aliados ou informantes. Custo varia de 1 (apenas rumores) a 5 (ajuda significativa e recursos). O Mestre decide a disponibilidade.",
+      "cost": 1,
+      "page": 39
+    },
+    {
+      "name": "Cobiçoso",
+      "description": "Desvantagem Mental. Ambição, ganância ou luxúria. Nível 1 (-1): Não quebra leis. Nível 2 (-2): Precisa de Vontade Simples para resistir. Nível 3 (-3): Vontade Difícil para resistir, pode trair amigos.",
+      "cost": -1,
+      "page": 39
+    },
+    {
+      "name": "Covarde",
+      "description": "Desvantagem Mental. Medo excessivo. Penalidade igual ao valor da desvantagem em testes de Medo. Nível 1 (-1): Evita riscos. Nível 2 (-2): Vontade Simples para lutar. Nível 3 (-3): Vontade Difícil para qualquer risco.",
+      "cost": -1,
+      "page": 40
+    },
+    {
+      "name": "Cruel",
+      "description": "Desvantagem Mental. Prazer na dor alheia. Nível 1 (-1): Cruel com inimigos. Nível 2 (-3): Sádico, machuca até amigos e entes queridos.",
+      "cost": -1,
+      "page": 40
+    },
+    {
+      "name": "Delírios",
+      "description": "Desvantagem Mental. Crenças falsas (Preconceito, Grandeza, Fobias, Estranhezas). Valor (-1 a -3) depende da severidade e impacto na vida do personagem.",
+      "cost": -1,
+      "page": 41
+    },
+    {
+      "name": "Problemas Emocionais",
+      "description": "Desvantagem Mental. Reações emocionais extremas. Inclui Medo de Rejeição (-1), Depressão (-2, penalidade em tarefas), Dependência Emocional (-1) e Medo de Compromisso (-1).",
+      "cost": -1,
+      "page": 41
+    },
+    {
+      "name": "Tempo de Reação Rápido",
+      "description": "Qualidade Mental. Pode agir primeiro em combates físicos sem testar iniciativa (senso comum aplica). +1 em testes de Vontade contra medo.",
+      "cost": 2,
+      "page": 42
+    },
+    {
+      "name": "Duro de Matar",
+      "description": "Qualidade Física. Muito resistente. Cada nível adiciona +3 Pontos de Vida e +1 em Testes de Sobrevivência. Máximo de 5 níveis para humanos.",
+      "cost": 1,
+      "page": 42
+    },
+    {
+      "name": "Honrado",
+      "description": "Desvantagem Mental. Código de honra rígido. Nível 1 (-1): Não trai amigos. Nível 2 (-2): Mantém a palavra com todos. Nível 3 (-3): Nunca mente ou embosca; penalidade -2 a -6 para mentir.",
+      "cost": -1,
+      "page": 43
+    },
+    {
+      "name": "Mal-Humorado",
+      "description": "Desvantagem Mental. Leva tudo muito a sério, não entende piadas e se irrita com humor alheio.",
+      "cost": -1,
+      "page": 43
+    },
+    {
+      "name": "Preguiçoso",
+      "description": "Desvantagem Mental. Evita trabalho. Custo para evoluir perícias dobra após o nível da perícia igualar o Atributo base associado.",
+      "cost": -2,
+      "page": 43
+    },
+    {
+      "name": "Minoria",
+      "description": "Desvantagem Social. Membro de grupo marginalizado ou discriminado. Sofre preconceito social. Valor pode aumentar dependendo do cenário.",
+      "cost": -1,
+      "page": 44
+    },
+    {
+      "name": "Identidades Múltiplas",
+      "description": "Qualidade Social. Identidade falsa completa com registros (CNH, CPF, etc.). Engana polícia comum, mas pode falhar contra agências de inteligência (FBI/NSA). Custo por identidade.",
+      "cost": 2,
+      "page": 44
+    },
+    {
+      "name": "Nervos de Aço",
+      "description": "Qualidade Mental. Imune a medo comum. Só faz Testes de Medo contra o sobrenatural bizarro e com bônus de +4.",
+      "cost": 3,
+      "page": 44
+    },
+    {
+      "name": "Obsessão",
+      "description": "Desvantagem Mental. Focado em uma pessoa ou tarefa à exclusão de tudo o mais. Negligencia deveres para perseguir a obsessão.",
+      "cost": -2,
+      "page": 44
+    },
+    {
+      "name": "Paranoico",
+      "description": "Desvantagem Mental. Não confia em ninguém, vê conspirações em tudo. Dificuldade em fazer os outros acreditarem nele.",
+      "cost": -2,
+      "page": 44
+    },
+    {
+      "name": "Memória Fotográfica",
+      "description": "Qualidade Mental. Memória perfeita. +1 em perícias de memorização. +1 a +3 em tarefas onde memória ajuda.",
+      "cost": 2,
+      "page": 44
+    },
+    {
+      "name": "Deficiência Física",
+      "description": "Desvantagem Física. Membro perdido ou inútil. Braço/Mão (-2), Perna (-3, mov reduzido), Ambos Braços (-4), Ambas Pernas (-4), Tetraplegia (-8). Próteses reduzem o custo.",
+      "cost": -2,
+      "page": 45
+    },
+    {
+      "name": "Imprudente",
+      "description": "Desvantagem Mental. Impulsivo e superconfiante. Age sem pensar nas consequências. Corre riscos desnecessários.",
+      "cost": -2,
+      "page": 45
+    },
+    {
+      "name": "Pesadelos Recorrentes",
+      "description": "Desvantagem Mental. Pesadelos constantes. Check diário (ou rolar 1 em D10). Se tiver o pesadelo, perde D4(2) pontos de Endurace por falta de descanso.",
+      "cost": -1,
+      "page": 45
+    },
+    {
+      "name": "Resistência",
+      "description": "Qualidade Física. Comprada por tipo (Doença, Veneno, Fadiga, Dor). Adiciona o nível da qualidade à Constituição para resistir ao efeito específico.",
+      "cost": 1,
+      "page": 45
+    },
+    {
+      "name": "Recursos (Qualidade)",
+      "description": "Qualidade Social. Riqueza material. Níveis positivos (+1 a +5) indicam Classe Média a Multimilionário.",
+      "cost": 2,
+      "page": 46
+    },
+    {
+      "name": "Recursos (Desvantagem)",
+      "description": "Desvantagem Social. Pobreza. Níveis negativos (-1 a -5) indicam desde Abaixo da Média até Indigente/Sem-teto.",
+      "cost": -2,
+      "page": 46
+    },
+    {
+      "name": "Segredo",
+      "description": "Desvantagem Social. Segredo perigoso. Valor depende da consequência: Dano à reputação (-1), Prisão/Deportação (-2), Risco de vida (-3).",
+      "cost": -1,
+      "page": 46
+    },
+    {
+      "name": "Exibido",
+      "description": "Desvantagem Mental. Precisa de atenção e aplausos. Tenta se exibir e cobrir seus erros. Não costuma trair princípios como o Covetous, apenas quer o holofote.",
+      "cost": -2,
+      "page": 46
+    },
+    {
+      "name": "Consciência Situacional",
+      "description": "Qualidade Mental. Observador nato. +2 em Percepção para notar perigo ou problemas. +2 para resistir a furtividade (Stealth) contra ele.",
+      "cost": 2,
+      "page": 46
+    },
+    {
+      "name": "Status (Qualidade)",
+      "description": "Qualidade Social. Fama e posição social. Soma metade dos Recursos ao Status.",
+      "cost": 1,
+      "page": 46
+    },
+    {
+      "name": "Status (Desvantagem)",
+      "description": "Desvantagem Social. Infâmia ou posição social inferior.",
+      "cost": -1,
+      "page": 46
+    },
+    {
+      "name": "Sem Talento",
+      "description": "Desvantagem Mental. Sem criatividade. -3 em artes e máx 1 Nível de Sucesso. Penalidade aplica a mentira, sedução e lábia.",
+      "cost": -2,
+      "page": 47
+    },
+    {
+      "name": "Fanático",
+      "description": "Desvantagem Mental. Fanático por uma causa/crença. Sacrifica tudo (vida própria e alheia) pelo ideal. Ignora leis que conflitem com a crença.",
+      "cost": -3,
+      "page": 47
+    },
+    {
+      "name": "Amaldiçoado",
+      "description": "Desvantagem Sobrenatural. Maldição poderosa. Varia de inconveniência (-1) a ruína total/morte iminente (-10). Geralmente exige expiação para remover.",
+      "cost": -1,
+      "page": 47
+    }
+  ],
+  "resourceSkills": [
+    {
+      "name": "Acrobacia",
+      "description": "Realizar acrobacias, equilíbrio e manobras complexas. Usa Dexterity. Pode ser usada no lugar de Dodge para evitar ataques.",
+      "type": "SPECIAL",
+      "page": 51
+    },
+    {
+      "name": "Atuação",
+      "description": "Interpretar papéis e falsificar emoções ou comportamentos. Usa Intelligence (atuar) ou Perception (detectar atuação).",
+      "type": "REGULAR",
+      "page": 51
+    },
+    {
+      "name": "Estética",
+      "description": "Uso de maquiagem e cosméticos. Cada nível de sucesso adiciona +1 em Attractiveness temporariamente ou auxilia Disguise. Usa Intelligence.",
+      "type": "REGULAR",
+      "page": 52
+    },
+    {
+      "name": "Briga",
+      "description": "Combate desarmado de rua ou básico. Usa Dexterity para socos/chutes e Strength para agarrar/derrubar.",
+      "type": "REGULAR",
+      "page": 52
+    },
+    {
+      "name": "Burocracia",
+      "description": "Navegar por organizações e procedimentos. Usa Intelligence (melhorar eficiência) ou Willpower (cortar burocracia).",
+      "type": "REGULAR",
+      "page": 52
+    },
+    {
+      "name": "Trapaça",
+      "description": "Quebrar regras e trapacear, focado em jogos de azar. Usa Intelligence (trapacear) ou Perception (detectar trapaça).",
+      "type": "REGULAR",
+      "page": 52
+    },
+    {
+      "name": "Escalada",
+      "description": "Escalar superfícies. Usa Dexterity, Strength ou Constitution dependendo do tipo de escalada.",
+      "type": "REGULAR",
+      "page": 52
+    },
+    {
+      "name": "Invasão de Sistemas",
+      "description": "Invadir sistemas, quebrar senhas e roubar dados. Usa Intelligence (maioria das tarefas) ou Perception (detectar defesas).",
+      "type": "REGULAR",
+      "page": 52
+    },
+    {
+      "name": "Programação",
+      "description": "Escrever e entender código. Usa Intelligence (escrever) ou Perception (reconhecer código).",
+      "type": "REGULAR",
+      "page": 53
+    },
+    {
+      "name": "Computadores",
+      "description": "Uso básico de computadores e sistemas operacionais. Geralmente tarefas de dificuldade Routine ou Easy.",
+      "type": "REGULAR",
+      "page": 53
+    },
+    {
+      "name": "Craft",
+      "description": "Artesanato e construção (Carpintaria, Armaria, etc.). Requer especialização (Type). Usa Intelligence (planejar), Dexterity (criar/reparar) ou Perception (avaliar).",
+      "type": "TYPE",
+      "page": 53
+    },
+    {
+      "name": "Dança",
+      "description": "Dança formal ou recreativa. Requer especialização (Type). Usa Dexterity (dançar) ou Perception (julgar).",
+      "type": "TYPE",
+      "page": 53
+    },
+    {
+      "name": "Demolições",
+      "description": "Armar e desarmar explosivos. Usa Intelligence (armar/desarmar) e Perception (entender bombas desconhecidas).",
+      "type": "REGULAR",
+      "page": 53
+    },
+    {
+      "name": "Disfarce",
+      "description": "Alterar aparência com roupas e maquiagem. Usa Intelligence (aplicar) e Perception (detectar disfarce alheio).",
+      "type": "REGULAR",
+      "page": 53
+    },
+    {
+      "name": "Esquiva",
+      "description": "Esquivar de ataques físicos e tiros buscando cobertura. Usa Dexterity.",
+      "type": "REGULAR",
+      "page": 53
+    },
+    {
+      "name": "Direção",
+      "description": "Operar veículos terrestres (Carro, Moto, Caminhão). Requer especialização (Type). Usa Dexterity.",
+      "type": "TYPE",
+      "page": 53
+    },
+    {
+      "name": "Vigilância Eletrônica",
+      "description": "Instalar e detectar escutas e câmeras. Usa Intelligence (instalar) e Perception (detectar).",
+      "type": "REGULAR",
+      "page": 53
+    },
+    {
+      "name": "Eletrônica",
+      "description": "Construir e reparar dispositivos eletrônicos. Requer ferramentas. Usa Perception (entender dispositivo) e Intelligence (reparar/construir).",
+      "type": "REGULAR",
+      "page": 54
+    },
+    {
+      "name": "Engenharia",
+      "description": "Conhecimento de design estrutural e construção (Civil, Mecânica, Elétrica). Requer especialização (Type). Usa Intelligence.",
+      "type": "TYPE",
+      "page": 54
+    },
+    {
+      "name": "Escapismo",
+      "description": "Escapar de cordas e algemas. Usa Dexterity (escapar) e Intelligence (visualizar técnica).",
+      "type": "REGULAR",
+      "page": 54
+    },
+    {
+      "name": "Belas Artes",
+      "description": "Expressão artística (Pintura, Desenho). Requer especialização (Type). Usa Intelligence (conceito), Dexterity (execução) e Perception (apreciação). Níveis de sucesso limitados pelo nível da perícia.",
+      "type": "TYPE",
+      "page": 54
+    },
+    {
+      "name": "Primeiros Socorros",
+      "description": "Tratar ferimentos básicos e CPR. Intelligence (curar/tratar), Perception (diagnosticar) e Dexterity (CPR).",
+      "type": "REGULAR",
+      "page": 54
+    },
+    {
+      "name": "Jogos de Azar",
+      "description": "Regras e estratégias de jogos de azar. Requer a perícia Cheating para trapacear efetivamente.",
+      "type": "REGULAR",
+      "page": 54
+    },
+    {
+      "name": "Armas de Fogo",
+      "description": "Uso de armas de fogo. Requer especialização (Type: Pistola, Rifle, etc.). Usa Dexterity (atirar) e Perception (mirar). Penalidade de -2 para tipos não treinados.",
+      "type": "TYPE",
+      "page": 55
+    },
+    {
+      "name": "Barganha",
+      "description": "Negociar preços ou acordos. Cada nível de sucesso altera o preço em 10%. Usa Willpower (melhor acordo) e Perception (detectar golpe).",
+      "type": "REGULAR",
+      "page": 55
+    },
+    {
+      "name": "Armas Brancas",
+      "description": "Uso de armas brancas (Faca, Espada, Machado). Requer especialização (Type). Penalidade de -2 a -4 para armas similares não treinadas.",
+      "type": "TYPE",
+      "page": 55
+    },
+    {
+      "name": "Humanidades",
+      "description": "Ciências humanas (História, Lei, Teologia). Requer especialização (Type). Usa Intelligence ou Perception.",
+      "type": "TYPE",
+      "page": 55
+    },
+    {
+      "name": "Instrução",
+      "description": "Ensinar uma perícia a outro. O professor precisa ter nível +2 acima do aluno. Acumular 5 níveis de sucesso em testes semanais (Int + Instruction) concede 1 XP ao aluno.",
+      "type": "REGULAR",
+      "page": 56
+    },
+    {
+      "name": "Intimidação",
+      "description": "Assustar ou coagir. Usa Willpower (intimidação real) ou Intelligence (blefe).",
+      "type": "REGULAR",
+      "page": 56
+    },
+    {
+      "name": "Idioma",
+      "description": "Falar outros idiomas. Requer especialização (Type). Nível define sotaque (1 = muito forte, 5 = nativo).",
+      "type": "TYPE",
+      "page": 56
+    },
+    {
+      "name": "Arrombamento",
+      "description": "Abrir fechaduras. Requer especialização (Type: Mecânica ou Eletrônica). Usa Dexterity (mecânica) ou Int/Per (eletrônica).",
+      "type": "TYPE",
+      "page": 56
+    },
+    {
+      "name": "Artes Marciais",
+      "description": "Combate avançado. Adiciona o nível da perícia ao dano de socos e chutes.",
+      "type": "SPECIAL",
+      "page": 56
+    },
+    {
+      "name": "Mecânica",
+      "description": "Construir e reparar mecanismos. Requer ferramentas. Usa Perception (entender) e Intelligence (reparar/construir). Complementar a Electronics.",
+      "type": "REGULAR",
+      "page": 57
+    },
+    {
+      "name": "Medicina",
+      "description": "Conhecimento médico avançado e cirurgia. Usa Perception (diagnóstico), Intelligence (tratamento) e Dexterity (cirurgia).",
+      "type": "SPECIAL",
+      "page": 57
+    },
+    {
+      "name": "Mitos e Lendas",
+      "description": "Folclore e mitologia de uma cultura específica (Type). Pode identificar criaturas, mas com risco de informações imprecisas.",
+      "type": "TYPE",
+      "page": 57
+    },
+    {
+      "name": "Prontidão",
+      "description": "Nível de alerta geral. Usa Perception (ver/ouvir) ou Intelligence (lembrar detalhes). Contra-ataca Stealth.",
+      "type": "REGULAR",
+      "page": 57
+    },
+    {
+      "name": "Ocultismo",
+      "description": "Conhecimento arcano real e sobre Essência. Menos abrangente que Mitos, mas mais preciso sobre o sobrenatural.",
+      "type": "SPECIAL",
+      "page": 57
+    },
+    {
+      "name": "Punga",
+      "description": "Roubar objetos sem ser notado. Usa Dexterity vs Perception da vítima.",
+      "type": "REGULAR",
+      "page": 58
+    },
+    {
+      "name": "Pilotagem",
+      "description": "Operar aeronaves ou embarcações. Requer especialização (Type). Usa Dexterity ou Intelligence (para veículos muito grandes).",
+      "type": "TYPE",
+      "page": 58
+    },
+    {
+      "name": "Instrumentos Musicais",
+      "description": "Tocar instrumento musical. Requer especialização (Type). Usa Dexterity (prazer), Intelligence (complexo) ou Constitution (longa duração). Sucesso limitado pelo nível da perícia.",
+      "type": "TYPE",
+      "page": 58
+    },
+    {
+      "name": "Interrogatório",
+      "description": "Interrogar e detectar mentiras. Usa Intelligence (enganar), Perception (detectar mentira) ou Willpower (quebrar resistência).",
+      "type": "REGULAR",
+      "page": 58
+    },
+    {
+      "name": "Investigação",
+      "description": "Buscar informações e pistas. Usa Intelligence (geral), Constitution (longas buscas) ou Perception (detalhes obscuros).",
+      "type": "REGULAR",
+      "page": 58
+    },
+    {
+      "name": "Cavalgar",
+      "description": "Montar animais ou veículos a tração animal. Requer especialização (Type).",
+      "type": "TYPE",
+      "page": 58
+    },
+    {
+      "name": "Rituais",
+      "description": "Realizar cerimônias culturais ou místicas. Requer especialização (Type). Usa Dexterity (danças) ou Intelligence (memória).",
+      "type": "TYPE",
+      "page": 58
+    },
+    {
+      "name": "Corrida",
+      "description": "Corrida. Types: Marathon (Constitution, resiste fadiga, +Endurance) ou Dash (Constitution, aumenta Speed).",
+      "type": "TYPE",
+      "page": 59
+    },
+    {
+      "name": "Ciências",
+      "description": "Conhecimento científico (Biologia, Química, etc.). Requer especialização (Type). Usa Intelligence ou Perception.",
+      "type": "TYPE",
+      "page": 59
+    },
+    {
+      "name": "Sedução",
+      "description": "Atração sexual e influência. Usa Intelligence, modificado por Charisma/Attractiveness.",
+      "type": "REGULAR",
+      "page": 59
+    },
+    {
+      "name": "Canto",
+      "description": "Canto treinado. Usa Constitution (qualidade), Intelligence (letra) e Perception (avaliar).",
+      "type": "REGULAR",
+      "page": 59
+    },
+    {
+      "name": "Prestidigitação",
+      "description": "Prestidigitação e mágica de palco. Usa Dexterity vs Perception. Intelligence para planejar truques.",
+      "type": "REGULAR",
+      "page": 59
+    },
+    {
+      "name": "Lábia",
+      "description": "Mentir de forma convincente e enganar. Usa Intelligence.",
+      "type": "REGULAR",
+      "page": 59
+    },
+    {
+      "name": "Esportes",
+      "description": "Esportes competitivos. Requer especialização (Type). Usa Dexterity ou Strength (ação), Intelligence (estratégia) e Perception (regras).",
+      "type": "TYPE",
+      "page": 59
+    },
+    {
+      "name": "Furtividade",
+      "description": "Mover-se em silêncio e esconder-se. Usa Dexterity (mover) e Perception (encontrar esconderijo).",
+      "type": "REGULAR",
+      "page": 60
+    },
+    {
+      "name": "Narrativa",
+      "description": "Influenciar audiência através de contos. Usa Willpower. Pode educar ou entreter.",
+      "type": "REGULAR",
+      "page": 60
+    },
+    {
+      "name": "Manha",
+      "description": "Conhecimento das ruas e submundo. Usa Intelligence (reconhecer gangues/nomes) e Perception (detectar problemas).",
+      "type": "REGULAR",
+      "page": 60
+    },
+    {
+      "name": "Vigilância",
+      "description": "Seguir pessoas sem ser notado ou perceber que está sendo seguido. Usa Perception.",
+      "type": "REGULAR",
+      "page": 60
+    },
+    {
+      "name": "Sobrevivência",
+      "description": "Sobreviver na natureza. Requer especialização em terreno (Type: Floresta, Deserto, etc.). Penalidade de -3 em terreno errado.",
+      "type": "TYPE",
+      "page": 60
+    },
+    {
+      "name": "Natação",
+      "description": "Nadar e flutuar. Usa Constitution. Falha resulta em afogamento. Consome Endurance Points.",
+      "type": "REGULAR",
+      "page": 60
+    },
+    {
+      "name": "Arremesso",
+      "description": "Arremessar objetos. Requer especialização (Type: Faca, Machado, Esfera). Usa Strength.",
+      "type": "TYPE",
+      "page": 61
+    },
+    {
+      "name": "Rastreamento",
+      "description": "Seguir rastros. Usa Perception (rastrear) e Intelligence (esconder rastros).",
+      "type": "REGULAR",
+      "page": 61
+    },
+    {
+      "name": "Transe",
+      "description": "Estado meditativo místico. Usa Willpower. Ignora dor, recupera Essência em dobro, mas sofre -2 em Percepção externa.",
+      "type": "SPECIAL",
+      "page": 61
+    },
+    {
+      "name": "Armadilhas",
+      "description": "Detectar, desarmar e criar armadilhas. Usa Intelligence (criar), Perception (detectar) e Dexterity (desarmar).",
+      "type": "REGULAR",
+      "page": 61
+    },
+    {
+      "name": "Medicina Alternativa",
+      "description": "Medicina alternativa (Acupuntura, Ervas). Requer especialização (Type). Eficácia a critério do mestre.",
+      "type": "TYPE",
+      "page": 61
+    },
+    {
+      "name": "Medicina Veterinária",
+      "description": "Medicina animal. Trata humanos com penalidade de -3 e máximo de 2 níveis de sucesso.",
+      "type": "REGULAR",
+      "page": 61
+    },
+    {
+      "name": "Levantamento de Peso",
+      "description": "Levantamento de peso. Permite exceder limites de força. Usa Strength.",
+      "type": "REGULAR",
+      "page": 61
+    },
+    {
+      "name": "Escrita",
+      "description": "Escrever textos técnicos ou criativos. Requer especialização (Type). Usa Intelligence (escrever) e Perception (criticar). Sucesso limitado pelo nível da perícia.",
+      "type": "TYPE",
+      "page": 61
+    }
+  ]
+}

@@ -8,9 +8,16 @@ export async function GET() {
       include: {
         attributes: true,
         status: true,
-        skills: true,
-        qualities: true,
-        drawbacks: true,
+        characterSkills: {
+          include: {
+            resourceSkill: true,
+          },
+        },
+        characterQualitiesDrawbacks: {
+          include: {
+            resourceQualityDrawback: true,
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
@@ -31,7 +38,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { name, category, age, weight, height, attributes, status, skills, qualities, drawbacks } = body
+    const { name, category, age, weight, height, attributes, status, characterSkills, characterQualitiesDrawbacks } = body
 
     // Validate required fields
     if (!name || !category) {
@@ -54,22 +61,26 @@ export async function POST(request: NextRequest) {
         status: status ? {
           create: status,
         } : undefined,
-        skills: skills ? {
-          create: skills,
+        characterSkills: characterSkills ? {
+          create: characterSkills,
         } : undefined,
-        qualities: qualities ? {
-          create: qualities,
-        } : undefined,
-        drawbacks: drawbacks ? {
-          create: drawbacks,
+        characterQualitiesDrawbacks: characterQualitiesDrawbacks ? {
+          create: characterQualitiesDrawbacks,
         } : undefined,
       },
       include: {
         attributes: true,
         status: true,
-        skills: true,
-        qualities: true,
-        drawbacks: true,
+        characterSkills: {
+          include: {
+            resourceSkill: true,
+          },
+        },
+        characterQualitiesDrawbacks: {
+          include: {
+            resourceQualityDrawback: true,
+          },
+        },
       },
     })
 

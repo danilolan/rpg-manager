@@ -1,6 +1,8 @@
 'use client'
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { SkillsList } from '@/components/organisms/skills-list'
+import { DrawbacksQualitiesList } from '@/components/organisms/drawbacks-qualities-list'
 
 export default function ResourcesPage() {
   return (
@@ -14,24 +16,14 @@ export default function ResourcesPage() {
 
       <Tabs defaultValue="skills" className="w-full">
         <TabsList>
-          <TabsTrigger value="skills">Skills and Qualities</TabsTrigger>
-          <TabsTrigger value="drawbacks">Drawbacks</TabsTrigger>
+          <TabsTrigger value="skills">Skills</TabsTrigger>
+          <TabsTrigger value="drawbacks-qualities">Drawbacks and Qualities</TabsTrigger>
         </TabsList>
         <TabsContent value="skills" className="mt-4">
-          <div className="rounded-lg border p-6">
-            <h3 className="text-lg font-semibold mb-4">Skills and Qualities</h3>
-            <p className="text-muted-foreground">
-              Content for Skills and Qualities will go here.
-            </p>
-          </div>
+          <SkillsList />
         </TabsContent>
-        <TabsContent value="drawbacks" className="mt-4">
-          <div className="rounded-lg border p-6">
-            <h3 className="text-lg font-semibold mb-4">Drawbacks</h3>
-            <p className="text-muted-foreground">
-              Content for Drawbacks will go here.
-            </p>
-          </div>
+        <TabsContent value="drawbacks-qualities" className="mt-4">
+          <DrawbacksQualitiesList />
         </TabsContent>
       </Tabs>
     </div>
