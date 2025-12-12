@@ -29,7 +29,7 @@ services:
     container_name: rpg-manager-app-prod
     restart: unless-stopped
     ports:
-      - "${APP_PORT:-3001}:3000"
+      - "${APP_PORT:-3002}:3000"
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-rpg_manager}?schema=public
       - NODE_ENV=production
@@ -45,7 +45,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: production
+      target: builder
       args:
         - NEXT_TELEMETRY_DISABLED=1
     container_name: rpg-manager-prisma-prod
