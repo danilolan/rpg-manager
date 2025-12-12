@@ -78,7 +78,7 @@ jobs:
             
             # Build with logs shown in real-time and saved to file
             set +e  # Temporarily disable exit on error to capture exit code
-            docker-compose --env-file .env.production -f docker-compose.prod.yml build --no-cache --progress=plain 2>&1 | tee /tmp/build.log
+            docker-compose --env-file .env.production -f docker-compose.prod.yml build --no-cache 2>&1 | tee /tmp/build.log
             BUILD_EXIT_CODE=${PIPESTATUS[0]}
             set -e  # Re-enable exit on error
             
