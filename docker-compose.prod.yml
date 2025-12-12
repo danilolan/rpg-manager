@@ -45,7 +45,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: builder
+      target: production
       args:
         - NEXT_TELEMETRY_DISABLED=1
     container_name: rpg-manager-prisma-prod
@@ -58,7 +58,7 @@ services:
       - ./prisma:/app/prisma
     networks:
       - rpg-network-prod
-    command: sh -c "npx prisma generate && npx prisma db push"
+    command: sh -c "npx prisma generate && npx prisma db push && npm run prisma:seed"
 
 volumes:
   postgres_data_prod:
