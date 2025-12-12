@@ -43,6 +43,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
           script: |
+            set -e  # Exit immediately if a command exits with a non-zero status
+            set -o pipefail  # Return value of a pipeline is the status of the last command to exit with a non-zero status
+            
             # Ensure webapps directory exists
             mkdir -p /home/${{ secrets.SERVER_USER }}/webapps
             
@@ -67,14 +70,35 @@ jobs:
             rm -rf /tmp/rpg-manager-deploy
             
             # Build and deploy with docker-compose
-            docker-compose -f docker-compose.prod.yml down
-            docker-compose -f docker-compose.prod.yml build --no-cache
-            docker-compose -f docker-compose.prod.yml up -d
+            echo "Stopping existing containers..."
+            docker-compose -f docker-compose.prod.yml down || true
+            
+            echo "Building Docker images..."
+            docker-compose -f docker-compose.prod.yml build --no-cache || {
+              echo "❌ Docker build failed!"
+              exit 1
+            }
+            
+            echo "Starting containers..."
+            docker-compose -f docker-compose.prod.yml up -d || {
+              echo "❌ Failed to start containers!"
+              exit 1
+            }
+            
+            # Verify containers are running
+            echo "Checking container status..."
+            if ! docker-compose -f docker-compose.prod.yml ps | grep -q "Up"; then
+              echo "❌ Containers are not running properly!"
+              docker-compose -f docker-compose.prod.yml ps
+              docker-compose -f docker-compose.prod.yml logs
+              exit 1
+            fi
             
             # Clean up old images
             docker image prune -af --filter "until=24h"
             
-            # Show status
+            # Show final status
+            echo "✅ Deployment successful!"
             docker-compose -f docker-compose.prod.yml ps
 
       - name: Notify deployment status
