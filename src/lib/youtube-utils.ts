@@ -48,3 +48,7 @@ export function getYoutubeThumbnailUrl(url: string, quality: 'default' | 'hq' | 
   return `https://img.youtube.com/vi/${videoId}/${qualityMap[quality]}.jpg`
 }
 
+
+
+
+

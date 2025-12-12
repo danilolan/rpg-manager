@@ -44,7 +44,7 @@ jobs:
           port: ${{ secrets.SSH_PORT || 22 }}
           script: |
             # Navigate to project directory
-            cd /home/${{ secrets.SERVER_USER }}/rpg-manager || exit 1
+            cd /home/frodo/webapps/rpg-manager || exit 1
             
             # Pull latest changes
             git pull origin main

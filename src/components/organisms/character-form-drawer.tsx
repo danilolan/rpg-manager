@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Drawer,
@@ -22,6 +22,18 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Plus, X } from 'lucide-react'
+import { useResourcesSkills } from '@/hooks/use-resources-skills'
+import { useResourcesQualitiesDrawbacks } from '@/hooks/use-resources-qualities-drawbacks'
+
+interface CharacterSkill {
+  resourceSkillId: string
+  level: string
+}
+
+interface CharacterQualityDrawback {
+  resourceQualityDrawbackId: string
+  level: string
+}
 
 interface CharacterFormData {
   name: string
@@ -43,6 +55,8 @@ interface CharacterFormData {
     speed: string
     maxLoad: string
   }
+  skills: CharacterSkill[]
+  qualitiesDrawbacks: CharacterQualityDrawback[]
 }
 
 const initialFormData: CharacterFormData = {
@@ -65,6 +79,8 @@ const initialFormData: CharacterFormData = {
     speed: '0',
     maxLoad: '0',
   },
+  skills: [],
+  qualitiesDrawbacks: [],
 }
 
 interface CharacterFormDrawerProps {
@@ -75,6 +91,8 @@ export function CharacterFormDrawer({ onCharacterCreated }: CharacterFormDrawerP
   const [open, setOpen] = useState(false)
   const [formData, setFormData] = useState<CharacterFormData>(initialFormData)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { skills } = useResourcesSkills()
+  const { items: qualitiesDrawbacks } = useResourcesQualitiesDrawbacks()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -101,6 +119,18 @@ export function CharacterFormDrawer({ onCharacterCreated }: CharacterFormDrawerP
           speed: parseInt(formData.status.speed) || 0,
           maxLoad: parseFloat(formData.status.maxLoad) || 0,
         },
+        characterSkills: formData.skills
+          .filter(skill => skill.resourceSkillId && skill.level)
+          .map(skill => ({
+            resourceSkillId: skill.resourceSkillId,
+            level: parseInt(skill.level) || 0,
+          })),
+        characterQualitiesDrawbacks: formData.qualitiesDrawbacks
+          .filter(item => item.resourceQualityDrawbackId && item.level)
+          .map(item => ({
+            resourceQualityDrawbackId: item.resourceQualityDrawbackId,
+            level: parseInt(item.level) || 0,
+          })),
       }
 
       const response = await fetch('/api/characters', {
@@ -368,6 +398,169 @@ export function CharacterFormDrawer({ onCharacterCreated }: CharacterFormDrawerP
                     }
                   />
                 </div>
+              </div>
+            </div>
+
+            {/* Skills */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-sm">Skills</h3>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      skills: [...formData.skills, { resourceSkillId: '', level: '0' }],
+                    })
+                  }}
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Skill
+                </Button>
+              </div>
+              <div className="space-y-3">
+                {formData.skills.map((skill, index) => (
+                  <div key={index} className="flex gap-2 items-end">
+                    <div className="flex-1 space-y-2">
+                      <Label>Skill</Label>
+                      <Select
+                        value={skill.resourceSkillId}
+                        onValueChange={(value) => {
+                          const newSkills = [...formData.skills]
+                          newSkills[index].resourceSkillId = value
+                          setFormData({ ...formData, skills: newSkills })
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a skill" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {skills.map((s) => (
+                            <SelectItem key={s.id} value={s.id}>
+                              {s.name} ({s.type})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="w-24 space-y-2">
+                      <Label>Level</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        value={skill.level}
+                        onChange={(e) => {
+                          const newSkills = [...formData.skills]
+                          newSkills[index].level = e.target.value
+                          setFormData({ ...formData, skills: newSkills })
+                        }}
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        setFormData({
+                          ...formData,
+                          skills: formData.skills.filter((_, i) => i !== index),
+                        })
+                      }}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                {formData.skills.length === 0 && (
+                  <p className="text-sm text-muted-foreground">No skills added yet.</p>
+                )}
+              </div>
+            </div>
+
+            {/* Qualities and Drawbacks */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-sm">Qualities & Drawbacks</h3>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      qualitiesDrawbacks: [
+                        ...formData.qualitiesDrawbacks,
+                        { resourceQualityDrawbackId: '', level: '0' },
+                      ],
+                    })
+                  }}
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Quality/Drawback
+                </Button>
+              </div>
+              <div className="space-y-3">
+                {formData.qualitiesDrawbacks.map((item, index) => (
+                  <div key={index} className="flex gap-2 items-end">
+                    <div className="flex-1 space-y-2">
+                      <Label>Quality/Drawback</Label>
+                      <Select
+                        value={item.resourceQualityDrawbackId}
+                        onValueChange={(value) => {
+                          const newItems = [...formData.qualitiesDrawbacks]
+                          newItems[index].resourceQualityDrawbackId = value
+                          setFormData({ ...formData, qualitiesDrawbacks: newItems })
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a quality or drawback" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {qualitiesDrawbacks.map((qd) => (
+                            <SelectItem key={qd.id} value={qd.id}>
+                              {qd.name} ({qd.cost > 0 ? `+${qd.cost}` : qd.cost})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="w-24 space-y-2">
+                      <Label>Level</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        value={item.level}
+                        onChange={(e) => {
+                          const newItems = [...formData.qualitiesDrawbacks]
+                          newItems[index].level = e.target.value
+                          setFormData({ ...formData, qualitiesDrawbacks: newItems })
+                        }}
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        setFormData({
+                          ...formData,
+                          qualitiesDrawbacks: formData.qualitiesDrawbacks.filter(
+                            (_, i) => i !== index
+                          ),
+                        })
+                      }}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                {formData.qualitiesDrawbacks.length === 0 && (
+                  <p className="text-sm text-muted-foreground">
+                    No qualities or drawbacks added yet.
+                  </p>
+                )}
               </div>
             </div>
           </div>
