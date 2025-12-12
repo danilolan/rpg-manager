@@ -43,8 +43,20 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
           script: |
+            # Ensure webapps directory exists
+            mkdir -p /home/${{ secrets.SERVER_USER }}/webapps
+            
+            # Navigate to webapps directory
+            cd /home/${{ secrets.SERVER_USER }}/webapps || exit 1
+            
+            # Clone or pull the repository
+            if [ ! -d rpg-manager ]; then
+              echo "Repository not found, cloning..."
+              git clone https://github.com/${{ github.repository }}.git rpg-manager
+            fi
+            
             # Navigate to project directory
-            cd /home/frodo/webapps/rpg-manager || exit 1
+            cd /home/${{ secrets.SERVER_USER }}/webapps/rpg-manager || exit 1
             
             # Pull latest changes
             git pull origin main
