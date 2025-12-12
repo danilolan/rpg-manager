@@ -149,7 +149,6 @@ export function EqualizerSlotComponent({ slot, masterVolume, onRemove, onVolumeC
             onChange={(e) => onVolumeChange(parseInt(e.target.value))}
             className="absolute vertical-slider cursor-pointer"
             style={{
-              writingMode: 'bt-lr',
               WebkitAppearance: 'slider-vertical',
               width: '8px',
               height: '100%',

@@ -21,6 +21,7 @@ interface D20RollerProps {
   categoryName: string
   isOpen: boolean
   onClose: () => void
+  onRollComplete?: () => void
 }
 
 export function D20Roller({ categoryId, categoryName, isOpen, onClose, onRollComplete }: D20RollerProps) {
