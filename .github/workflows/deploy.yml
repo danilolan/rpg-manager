@@ -76,15 +76,17 @@ jobs:
             echo "Building Docker images..."
             echo "Build logs will be shown below..."
             
-            # Build with explicit error checking
-            BUILD_OUTPUT=$(docker-compose --env-file .env.production -f docker-compose.prod.yml build --no-cache --progress=plain 2>&1)
-            BUILD_EXIT_CODE=$?
-            echo "$BUILD_OUTPUT"
+            # Build with logs shown in real-time and saved to file
+            set +e  # Temporarily disable exit on error to capture exit code
+            docker-compose --env-file .env.production -f docker-compose.prod.yml build --no-cache --progress=plain 2>&1 | tee /tmp/build.log
+            BUILD_EXIT_CODE=${PIPESTATUS[0]}
+            set -e  # Re-enable exit on error
             
             if [ $BUILD_EXIT_CODE -ne 0 ]; then
+              echo ""
               echo "❌ Docker build failed with exit code: $BUILD_EXIT_CODE"
-              echo "Showing last 100 lines of build output:"
-              echo "$BUILD_OUTPUT" | tail -n 100
+              echo "Showing last 50 lines of build output:"
+              tail -n 50 /tmp/build.log
               exit 1
             fi
             
@@ -130,7 +132,6 @@ jobs:
             
             # Show final status
             echo "✅ Deployment successful!"
-            docker-compose --env-file .env.production -f docker-compose.prod.yml ps
             docker-compose --env-file .env.production -f docker-compose.prod.yml ps
 
       - name: Notify deployment status

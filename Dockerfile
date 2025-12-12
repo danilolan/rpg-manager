@@ -19,14 +19,14 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY prisma ./prisma
 
 # Generate Prisma Client (doesn't need DATABASE_URL for generation)
-RUN npx prisma generate || (echo "❌ Prisma generate failed!" && exit 1)
+RUN npx prisma generate
 
 # Copy rest of the application
 COPY . .
 
 # Build Next.js (DATABASE_URL not needed at build time for standalone output)
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm run build || (echo "❌ Next.js build failed!" && exit 1)
+RUN npm run build
 
 # Production image, copy all the files and run next
 FROM base AS production
