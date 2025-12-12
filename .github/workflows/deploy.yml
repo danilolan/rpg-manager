@@ -74,10 +74,28 @@ jobs:
             docker-compose --env-file .env.production -f docker-compose.prod.yml down || true
             
             echo "Building Docker images..."
-            docker-compose --env-file .env.production -f docker-compose.prod.yml build --no-cache || {
-              echo "❌ Docker build failed!"
+            echo "Build logs will be shown below..."
+            
+            # Build with explicit error checking
+            BUILD_OUTPUT=$(docker-compose --env-file .env.production -f docker-compose.prod.yml build --no-cache --progress=plain 2>&1)
+            BUILD_EXIT_CODE=$?
+            echo "$BUILD_OUTPUT"
+            
+            if [ $BUILD_EXIT_CODE -ne 0 ]; then
+              echo "❌ Docker build failed with exit code: $BUILD_EXIT_CODE"
+              echo "Showing last 100 lines of build output:"
+              echo "$BUILD_OUTPUT" | tail -n 100
               exit 1
-            }
+            fi
+            
+            # Verify images were created (docker-compose creates images with project name prefix)
+            echo "Verifying built images..."
+            docker images | grep -E "(rpg-manager|webapps)" || true
+            if ! docker images | grep -qE "rpg-manager.*app|webapps.*app"; then
+              echo "⚠️  Warning: Could not find expected app image, but continuing..."
+            fi
+            
+            echo "✅ Docker build completed successfully!"
             
             echo "Starting containers..."
             docker-compose --env-file .env.production -f docker-compose.prod.yml up -d || {
@@ -87,10 +105,23 @@ jobs:
             
             # Verify containers are running
             echo "Checking container status..."
-            if ! docker-compose --env-file .env.production -f docker-compose.prod.yml ps | grep -q "Up"; then
-              echo "❌ Containers are not running properly!"
-              docker-compose --env-file .env.production -f docker-compose.prod.yml ps
-              docker-compose --env-file .env.production -f docker-compose.prod.yml logs
+            sleep 5  # Give containers a moment to start
+            echo "Container status:"
+            docker-compose --env-file .env.production -f docker-compose.prod.yml ps
+            
+            # Check if app container is running
+            if ! docker ps --filter "name=rpg-manager-app-prod" --format "{{.Status}}" | grep -qiE "(Up|running)"; then
+              echo "❌ App container is not running!"
+              echo "App container logs:"
+              docker logs rpg-manager-app-prod --tail 50 || true
+              docker-compose --env-file .env.production -f docker-compose.prod.yml logs app || true
+              exit 1
+            fi
+            
+            # Check if postgres container is running
+            if ! docker ps --filter "name=rpg-manager-db-prod" --format "{{.Status}}" | grep -qiE "(Up|running)"; then
+              echo "❌ Database container is not running!"
+              docker-compose --env-file .env.production -f docker-compose.prod.yml logs postgres || true
               exit 1
             fi
             
@@ -99,6 +130,7 @@ jobs:
             
             # Show final status
             echo "✅ Deployment successful!"
+            docker-compose --env-file .env.production -f docker-compose.prod.yml ps
             docker-compose --env-file .env.production -f docker-compose.prod.yml ps
 
       - name: Notify deployment status

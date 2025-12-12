@@ -14,14 +14,19 @@ RUN npm ci
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
+
+# Copy Prisma schema first
+COPY prisma ./prisma
+
+# Generate Prisma Client (doesn't need DATABASE_URL for generation)
+RUN npx prisma generate || (echo "❌ Prisma generate failed!" && exit 1)
+
+# Copy rest of the application
 COPY . .
 
-# Generate Prisma Client
-RUN npx prisma generate
-
-# Build Next.js
-ENV NEXT_TELEMETRY_DISABLED 1
-RUN npm run build
+# Build Next.js (DATABASE_URL not needed at build time for standalone output)
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN npm run build || (echo "❌ Next.js build failed!" && exit 1)
 
 # Production image, copy all the files and run next
 FROM base AS production
