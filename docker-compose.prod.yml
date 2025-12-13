@@ -45,7 +45,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: production
+      target: builder
       args:
         - NEXT_TELEMETRY_DISABLED=1
     container_name: rpg-manager-prisma-prod
