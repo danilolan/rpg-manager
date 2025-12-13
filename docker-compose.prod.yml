@@ -49,6 +49,7 @@ services:
       args:
         - NEXT_TELEMETRY_DISABLED=1
     container_name: rpg-manager-prisma-prod
+    user: root
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-rpg_manager}?schema=public
     depends_on:
@@ -58,7 +59,7 @@ services:
       - ./prisma:/app/prisma
     networks:
       - rpg-network-prod
-    command: sh -c "npx prisma@6 generate && npx prisma@6 db push && npm run prisma:seed"
+    command: sh -c "npx prisma generate && npx prisma db push && npm run prisma:seed"
 
 volumes:
   postgres_data_prod:
